@@ -20,10 +20,20 @@ function Reservation() {
 
   const handleOpenModal = () => {
     setModalIsOpen(true);
+    setStartHour(9);
+    setStartMinute(0);
+    setEndHour(21);
+    setEndMinute(0);
+    setCompanions([{ email: '', name: '' }]);
   };
 
   const handleCloseModal = () => {
     setModalIsOpen(false);
+    setStartHour(9);
+    setStartMinute(0);
+    setEndHour(21); 
+    setEndMinute (0);
+    setCompanions([{ email: '', name: '' }]);
   };
 
   const handleAddCompanion = () => {
@@ -105,11 +115,24 @@ function Reservation() {
     );
   };
 
-  const modalContent = () => {
-    return(
-    <div className="modal">
-      <div className="modal-background" onClick={handleCloseModal}></div>
-      <div className="modal-content">
+  return (
+    <div className="container">
+      <button className="예약하기" onClick={handleOpenModal}>
+        예약하기
+      </button>
+
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={handleCloseModal}
+        contentLabel="예약하기"
+        style={{
+          content: {
+            width: "1000px",
+            height: "640px",
+            margin: "auto",
+          },
+        }}
+      >
         <h2>예약하기</h2>
         <div className="reservation-info">
           <h4>시설명</h4>
@@ -199,64 +222,27 @@ function Reservation() {
               </div>
             </div>
 
-            <div className="companion-inputs">
-              <div className="companion-info">
-                <div className="companion-email">
-                  <label htmlFor="email">동반자 이메일</label>
-                </div>
-                <div className="companion-name">
-                  <label htmlFor="name">동반자 이름</label>
-                </div>
+            {companions.map((companion, index) => (
+              <div key={index} className="companion-blank">
+                <input
+                  type="email"
+                  placeholder={`동반자 ${index + 1} 이메일`}
+                  value={companion.email}
+                  onChange={(event) => handleCompanionEmailChange(event, index)}
+                />
+                <input
+                  type="text"
+                  placeholder={`동반자 ${index + 1} 이름`}
+                  value={companion.name}
+                  onChange={(event) => handleCompanionNameChange(event, index)}
+                />
               </div>
+            ))}
 
-              {companions.map((companion, index) => (
-                <div key={index} className="companion-blank">
-                  <input
-                    type="email"
-                    placeholder={`동반자 ${index + 1} 이메일`}
-                    value={companion.email}
-                    onChange={(event) =>
-                      handleCompanionEmailChange(event, index)
-                    }
-                  />
-                  <input
-                    type="text"
-                    placeholder={`동반자 ${index + 1} 이름`}
-                    value={companion.name}
-                    onChange={(event) =>
-                      handleCompanionNameChange(event, index)
-                    }
-                  />
-                </div>
-              ))}
-            </div>
             <button onClick={handleAddCompanion}>추가</button>
           </div>
         </div>
-      </div>
-    </div>
-    )
-  };
 
-  return (
-    <div className="container">
-      <button className="예약하기" onClick={handleOpenModal}>
-        예약하기
-      </button>
-
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={handleCloseModal}
-        contentLabel="예약하기"
-        style={{
-          content: {
-            width: "1200px",
-            height: "800px",
-            margin: "auto",
-          },
-        }}
-      >
-        {modalContent}
         <button className="check" onClick={handleCloseModal}>
           확인
         </button>

@@ -26,7 +26,7 @@ const BlockItem = ({ roomNumber, capacity, timeColors}) => {
         ))}
       </span>
       <span className="frame7">
-        <button onClick={openReservation}>예약하기</button>
+        <button onClick={openReservation} component={Reservation}>예약하기</button>
       </span>
 
       {showReservation && (
