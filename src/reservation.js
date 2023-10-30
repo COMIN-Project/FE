@@ -118,9 +118,9 @@ function Reservation(){
 return(
     <div className="container">
         <Router>
-            <Link to='/예약하기'>
+            
                 <button className="예약하기" onClick={handleOpenModal}>예약하기</button>
-            </Link>
+            
             
             <Route exact path="/예약하기">
                 {showModal && (
