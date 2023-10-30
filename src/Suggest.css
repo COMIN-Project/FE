@@ -1,157 +1,157 @@
 
 .box1 {
-width: 240px;
-height: 40px; 
-position: absolute;
-left : 199px;
-top : 130px;
-background: #F8F8F8; 
-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
-border-radius: 10px;
-margin: 0;
-}
-
-.box2 {
     width: 240px;
     height: 40px; 
     position: absolute;
-    left : 519px;
+    left : 199px;
     top : 130px;
     background: #F8F8F8; 
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
     border-radius: 10px;
     margin: 0;
-}
-
-.box1 select,
-.box2 select
-{
-    position: relative;
-    left: 4px;
-    top: 8px;
-    font-size: 18px;
-    background: #F8F8F8; 
-    border: none;
-}
-
-.box3 {
-    width: 240px;
-    height: 40px; 
-    position: absolute;
-    left : 1020px;
-    top : 130px;
-    background: #F8F8F8; 
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
-    border-radius: 10px;
-    margin: 0;
-}
-
-.box3 select {
-    position: relative;
-    left: 4px;
-    top: 6px;
-    font-size: 18px;
-    background: #F8F8F8; 
-    border: none;
-}
-
-.input-box {
-    position : absolute;
-    left : 171px;
-    top : 200px;
-    margin : 0;
-}
-
-.input-bar {
-    width: 1100px;
-    height: 100%;
-    position: relative;
-    top : 0px;
-    background: white;
-    border-top: 5px #6095FF solid;
-    margin : 0;
-}
-
-.input-title input {
-    width: 1100px;
-    border: none;
-    position: relative;
-    left: 0px; 
-    top: 13px; 
-    color: black; 
-    font-size: 32px; 
-    font-family: 'Inter'; 
-    font-weight: 400; 
-    text-transform: capitalize; 
-    word-wrap: break-word;
-    margin-bottom : 0;
-    margin-left: 8px;
-    text-align: left;
-}
-
-.input-content {
-    width: 1100px;
-    height: 558px;
-    position: relative; 
-    top : 55px;
-    left : 0px;
-    background: rgba(128, 128, 128, 0.08); 
-    border-top-left-radius: 10px; 
-    border-top-right-radius: 10px; 
-    overflow: hidden;
-    margin : 0;
-}
-
-.input-content textarea {
-    width: 1100px;
-    height: 558px;
-    background: rgba(128, 128, 128, 0.00);
-    border: 0;
-
-    position: relative;
-    left: 0px; 
-    top: 13px;
-    color: black; 
-    font-size: 25px; 
-    font-family: 'Inter'; 
-    font-weight: 400; 
-    text-transform: capitalize; 
-    word-wrap: break-word;
-    margin-bottom : 0;
-    margin-left: 8px;
-    text-align: left;
-}
-
-.check {
-    width: 150px; 
-    height: 50px; 
-    position: absolute;
-    left : 1129px;
-    top : 946px;
-    border-radius: 5px;
-    overflow: hidden; 
-    border: 1px solid;
-    z-index: inherit;
-
-    background-color: #6187D280;
-    opacity: 50%;
-    color: #FFFFFF;
-    padding: 10px 20px;
-    border: none;
-
-    font-size: 25px;
-    font-family: 'Inter';
-    font-weight: 400;
-    text-transform: capitalize;
-    word-wrap: break-word;
-    text-align: center;
-}
-
-.box1 select:focus,
-.box2 select:focus,
-.box3 select:focus,
-.input-title input:focus,
-.input-content textarea:focus {
-  outline: none;
-  border: none;
-}
+    }
+    
+    .box2 {
+        width: 240px;
+        height: 40px; 
+        position: absolute;
+        left : 519px;
+        top : 130px;
+        background: #F8F8F8; 
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
+        border-radius: 10px;
+        margin: 0;
+    }
+    
+    .box1 select,
+    .box2 select
+    {
+        position: relative;
+        left: 4px;
+        top: 8px;
+        font-size: 18px;
+        background: #F8F8F8; 
+        border: none;
+    }
+    
+    .box3 {
+        width: 240px;
+        height: 40px; 
+        position: absolute;
+        left : 1020px;
+        top : 130px;
+        background: #F8F8F8; 
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
+        border-radius: 10px;
+        margin: 0;
+    }
+    
+    .box3 select {
+        position: relative;
+        left: 4px;
+        top: 6px;
+        font-size: 18px;
+        background: #F8F8F8; 
+        border: none;
+    }
+    
+    .input-box {
+        position : absolute;
+        left : 171px;
+        top : 200px;
+        margin : 0;
+    }
+    
+    .input-bar {
+        width: 1100px;
+        height: 100%;
+        position: relative;
+        top : 0px;
+        background: white;
+        border-top: 5px #6095FF solid;
+        margin : 0;
+    }
+    
+    .input-title input {
+        width: 1100px;
+        border: none;
+        position: relative;
+        left: 0px; 
+        top: 13px; 
+        color: black; 
+        font-size: 32px; 
+        font-family: 'Inter'; 
+        font-weight: 400; 
+        text-transform: capitalize; 
+        word-wrap: break-word;
+        margin-bottom : 0;
+        margin-left: 8px;
+        text-align: left;
+    }
+    
+    .input-content {
+        width: 1100px;
+        height: 558px;
+        position: relative; 
+        top : 55px;
+        left : 0px;
+        background: rgba(128, 128, 128, 0.08); 
+        border-top-left-radius: 10px; 
+        border-top-right-radius: 10px; 
+        overflow: hidden;
+        margin : 0;
+    }
+    
+    .input-content textarea {
+        width: 1100px;
+        height: 558px;
+        background: rgba(128, 128, 128, 0.00);
+        border: 0;
+    
+        position: relative;
+        left: 0px; 
+        top: 13px;
+        color: black; 
+        font-size: 25px; 
+        font-family: 'Inter'; 
+        font-weight: 400; 
+        text-transform: capitalize; 
+        word-wrap: break-word;
+        margin-bottom : 0;
+        margin-left: 8px;
+        text-align: left;
+    }
+    
+    .check {
+        width: 150px; 
+        height: 50px; 
+        position: absolute;
+        left : 1129px;
+        top : 946px;
+        border-radius: 5px;
+        overflow: hidden; 
+        border: 1px solid;
+        z-index: inherit;
+    
+        background-color: #6187D280;
+        opacity: 50%;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border: none;
+    
+        font-size: 25px;
+        font-family: 'Inter';
+        font-weight: 400;
+        text-transform: capitalize;
+        word-wrap: break-word;
+        text-align: center;
+    }
+    
+    .box1 select:focus,
+    .box2 select:focus,
+    .box3 select:focus,
+    .input-title input:focus,
+    .input-content textarea:focus {
+      outline: none;
+      border: none;
+    }

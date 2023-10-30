@@ -5,8 +5,17 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import './reserve.css';
+import Reservation from './reservation';
 
-const BlockItem = ({ roomNumber, capacity, timeColors, buttonText }) => {
+const BlockItem = ({ roomNumber, capacity, timeColors}) => {
+  const [showReservation, setShowReservation] = useState(false);
+  const openReservation = () => {
+    setShowReservation(true);
+  };
+
+  const closeReservation = () => {
+    setShowReservation(false);
+  };
   return (
     <li className='block'>
       <span className='block-typo'>{roomNumber}</span>
@@ -16,7 +25,17 @@ const BlockItem = ({ roomNumber, capacity, timeColors, buttonText }) => {
           <span key={idx} className='rectangle' style={{ background: color }}></span>
         ))}
       </span>
-      <span className='frame7'><a className='frame7-typo'>{buttonText}</a></span>
+      <span className="frame7">
+        <button onClick={openReservation}>예약하기</button>
+      </span>
+
+      {showReservation && (
+        <div className="modal">
+          <Reservation />
+          <button onClick={closeReservation}>닫기</button>
+        </div>
+      )}
+
     </li>
   );
 }
@@ -28,13 +47,13 @@ function getFacilityData(nowFacility) {
         roomNumber: "101호",
         capacity: "10 ~ 20",
         timeColors: ["#D9D9D9", "#D9D9D9", "#D9D9D9", "#D9D9D9", "#D9D9D9", "#D9D9D9", "#D9D9D9", "#D9D9D9"],
-        buttonText: "예약하기"
+ 
       },
       {
         roomNumber: "104호",
         capacity: "10 ~ 20",
         timeColors: ["#D9D9D9", "#D9D9D9", "#D9D9D9", "#D9D9D9", "#D9D9D9", "#D9D9D9", "#D9D9D9", "#D9D9D9"],
-        buttonText: "예약하기"
+ 
       }
     ];
   } else {
@@ -56,6 +75,7 @@ const Reserve = () =>{
 
   return (
     <>
+   
    <div id="reDate">
     <ul className="Date">
         <li className="Date-name"><h1>일자별 대여현황</h1></li>
@@ -133,7 +153,7 @@ const Reserve = () =>{
       roomNumber={item.roomNumber}
       capacity={item.capacity}
       timeColors={item.timeColors}
-      buttonText={item.buttonText}
+      buttonText={<Reservation />}
     />
   ))}
 

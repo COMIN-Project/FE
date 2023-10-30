@@ -1,299 +1,299 @@
 .Name {
-    display : flex;
-    position : absolute;
-    left : 233px;
-    top : 146px;
+  display : flex;
+  position : absolute;
+  left : 233px;
+  top : 146px;
 }
 
 .people p {
-    width : 150px;
-    height : 45px;
-    color: black;
-    font-size: 36px;
-    font-family: 'Inter';
-    font-weight: 400;
-    text-transform: capitalize;
-    word-wrap: break-word;
-}
-
-.date p, .time p {
-    width : 150px;
-    height : 45px;
-    margin-left : 319px;
-    
-    color: black;
-    font-size: 36px;
-    font-family: 'Inter';
-    font-weight: 400;
-    text-transform: capitalize;
-    word-wrap: break-word;
-}
-
-.people-box {
-    width : 200px;
-    height : 60px;
-    position : absolute;
-    left : 200px;
-    top : 217px;
-    display: flex;
-
-    background: rgba(128, 128, 128, 0.10);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-
-    color: black;
-    font-size: 24px;
-    font-family: Inter;
-    font-weight: 400;
-    text-transform: capitalize;
-    word-wrap: break-word;
-}
-
-.unit {
-    width: 100px;
-    height: 45px;
-    position: relative;
-    left: 10px;
-    top: 7px;
-
-    font-size: 24px;
-    font-family: 'Inter';
-    font-weight: 400;
-    color: black;
-    text-align: center;
-    background: rgba(128, 128, 128, 0.00);
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  
-  .unit:hover {
-    background-color: #f2f2f2; /* 마우스 오버 시 배경색 변경 */
-  }
-  
-  .unit:focus {
-    outline: none; /* 포커스 시 기본 아웃라인 제거 */
-  }
-
-  /* DatePicker 스타일 */
-.react-datepicker-wrapper {
-    width: 150px;
-    margin-left: 260px;
-}
-
-.react-datepicker__input-container input {
-    position: relative;
-    top: 7px;
- 
-    width: 200px;
-    height: 60px;
-    font-size: 24px;
-    font-family: 'Inter';
-    font-weight: 400;
-    text-transform: capitalize;
-    border: none;
-    background: rgba(128, 128, 128, 0.10);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 5px;
-    text-align: center;
-}
-
-.time-box {
-    display: flex;
-    width: 260px;
-    position: absolute;
-    left: 900px;
-    top: 70px;
-    justify-content: space-between;
-  }
-  
-  .hour,
-  .minute {
-    width: 120px;
-    height: 60px;
-    position: relative;
-    left: 0px;
-    top: 0px;
-
-
-    display: flex;
-    align-items: center;
-    background: rgba(128, 128, 128, 0.10);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 5px;
-    border: none;
-    font-size: 24px;
-    font-family: 'Inter';
-    font-weight: 400;
-    color: black;
-    text-align: center;
-  }
-
-.hour-box,
-.minute-box {
-    width: 100px;
-    height: 45px;
-    position: relative;
-    left: 17px;
-    top: 0px;
-
-    font-size: 24px;
-    font-family: 'Inter';
-    font-weight: 400;
-    color: black;
-    text-align: center;
-    background: rgba(128, 128, 128, 0.00);
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    margin-right: 10px;
-
-}
-  
-.unit {
-    margin-left: 5px;
-    font-size: 24px;
-    font-family: 'Inter';
-    font-weight: 400;
-    color: black;
-  }
-
-
-
-  .calendar-container {
-    position: absolute;
-    left: 200px;
-    top: 320px;
-    width: 1200px;
-    height: 500px;
-    margin-top: 20px;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-  }
-  
-  .react-calendar {
-    width: 100%;
-    border: none;
-    font-family: 'Inter', sans-serif;
-  }
-  
-  .react-calendar__navigation {
-    background-color: #f2f2f2;
-  }
-  
-  .react-calendar__navigation button {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .react-calendar__month-view__weekdays {
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 0.9rem;
-    color: #333;
-  }
-  
-  .react-calendar__month-view__days__day {
-    min-height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .react-calendar__month-view__days__day--neighboringMonth {
-    color: #ccc;
-  }
-  
-  .react-calendar__tile--now {
-    background-color: #a4bbe6;
-  }
-  
-  .react-calendar__tile--active {
-    background-color: #ffcccb;
-    color: white;
-  }
-
-.search {
-  width: 200px; 
-  height: 80px; 
-  position: absolute;
-  left : 1270px;
-  top : 880px;
-  border-radius: 5px;
-  overflow: hidden; 
-  border: 1px solid;
-  z-index: inherit;
-
-  background-color: #6187D280;
-  opacity: 50%;
-  color: #FFFFFF;
-  padding: 10px 20px;
-  border: none;
-
-  font-size: 35px;
+  width : 150px;
+  height : 45px;
+  color: black;
+  font-size: 36px;
   font-family: 'Inter';
   font-weight: 400;
   text-transform: capitalize;
   word-wrap: break-word;
+}
+
+.date p, .time p {
+  width : 150px;
+  height : 45px;
+  margin-left : 319px;
+  
+  color: black;
+  font-size: 36px;
+  font-family: 'Inter';
+  font-weight: 400;
+  text-transform: capitalize;
+  word-wrap: break-word;
+}
+
+.people-box {
+  width : 200px;
+  height : 60px;
+  position : absolute;
+  left : 200px;
+  top : 217px;
+  display: flex;
+
+  background: rgba(128, 128, 128, 0.10);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+  color: black;
+  font-size: 24px;
+  font-family: Inter;
+  font-weight: 400;
+  text-transform: capitalize;
+  word-wrap: break-word;
+}
+
+.unit {
+  width: 100px;
+  height: 45px;
+  position: relative;
+  left: 10px;
+  top: 7px;
+
+  font-size: 24px;
+  font-family: 'Inter';
+  font-weight: 400;
+  color: black;
   text-align: center;
+  background: rgba(128, 128, 128, 0.00);
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.unit:hover {
+  background-color: #f2f2f2; /* 마우스 오버 시 배경색 변경 */
+}
+
+.unit:focus {
+  outline: none; /* 포커스 시 기본 아웃라인 제거 */
+}
+
+/* DatePicker 스타일 */
+.react-datepicker-wrapper {
+  width: 150px;
+  margin-left: 260px;
+}
+
+.react-datepicker__input-container input {
+  position: relative;
+  top: 7px;
+
+  width: 200px;
+  height: 60px;
+  font-size: 24px;
+  font-family: 'Inter';
+  font-weight: 400;
+  text-transform: capitalize;
+  border: none;
+  background: rgba(128, 128, 128, 0.10);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  text-align: center;
+}
+
+.time-box {
+  display: flex;
+  width: 260px;
+  position: absolute;
+  left: 900px;
+  top: 70px;
+  justify-content: space-between;
+}
+
+.hour,
+.minute {
+  width: 120px;
+  height: 60px;
+  position: relative;
+  left: 0px;
+  top: 0px;
+
+
+  display: flex;
+  align-items: center;
+  background: rgba(128, 128, 128, 0.10);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  border: none;
+  font-size: 24px;
+  font-family: 'Inter';
+  font-weight: 400;
+  color: black;
+  text-align: center;
+}
+
+.hour-box,
+.minute-box {
+  width: 100px;
+  height: 45px;
+  position: relative;
+  left: 17px;
+  top: 0px;
+
+  font-size: 24px;
+  font-family: 'Inter';
+  font-weight: 400;
+  color: black;
+  text-align: center;
+  background: rgba(128, 128, 128, 0.00);
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+
+}
+
+.unit {
+  margin-left: 5px;
+  font-size: 24px;
+  font-family: 'Inter';
+  font-weight: 400;
+  color: black;
+}
+
+
+
+.calendar-container {
+  position: absolute;
+  left: 200px;
+  top: 320px;
+  width: 1200px;
+  height: 500px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+}
+
+.react-calendar {
+  width: 100%;
+  border: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.react-calendar__navigation {
+  background-color: #f2f2f2;
+}
+
+.react-calendar__navigation button {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.react-calendar__month-view__weekdays {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.react-calendar__month-view__days__day {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #ccc;
+}
+
+.react-calendar__tile--now {
+  background-color: #a4bbe6;
+}
+
+.react-calendar__tile--active {
+  background-color: #ffcccb;
+  color: white;
+}
+
+.search {
+width: 200px; 
+height: 80px; 
+position: absolute;
+left : 1270px;
+top : 880px;
+border-radius: 5px;
+overflow: hidden; 
+border: 1px solid;
+z-index: inherit;
+
+background-color: #6187D280;
+opacity: 50%;
+color: #FFFFFF;
+padding: 10px 20px;
+border: none;
+
+font-size: 35px;
+font-family: 'Inter';
+font-weight: 400;
+text-transform: capitalize;
+word-wrap: break-word;
+text-align: center;
 }
 
 
 .result-box {
-  width: 1040px;
-  height: 620px;
+width: 1200px;
+height: 620px;
 
-  position: absolute;
-  left: 200px;
-  top: 320px;
-  border: 1px black solid;
+position: absolute;
+left: 200px;
+top: 320px;
+border: 1px black solid;
 
 }
 
 .square{
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  margin-right: 50px;
-  }
-  
+width: 20px;
+height: 20px;
+flex-shrink: 0;
+margin-right: 50px;
+}
+
 .mark{
-  display:flex;
-  justify-content: center;
-  width: 327px;
-  height: 53px;
-  flex-shrink: 0;
-  border: none;
+display:flex;
+justify-content: center;
+width: 327px;
+height: 53px;
+flex-shrink: 0;
+border: none;
 }
 
 .blue-bar {
-  width: 1040px; 
-  height: 0px; 
-  border: 2px #0066B2 solid;
+width: 1200px; 
+height: 0px; 
+border: 2px #0066B2 solid;
 }
 
 .name-bar {
-  width: 1040px;
-  height: 60px;
-  position: relative;
-  top: 0px;
-  background: rgba(217, 217, 217, 0.80);
-  display: flex;
-  
+width: 1200px;
+height: 60px;
+position: relative;
+top: 0px;
+background: rgba(217, 217, 217, 0.80);
+display: flex;
+
 }
 
 .name-bar p {
-  margin-left: 120px;
-  position: relative;
-  left: 20px;
-  top: 18px;
+margin-left: 120px;
+position: relative;
+left: 20px;
+top: 18px;
 
-  color: black;
-  font-size: 20px;
-  font-family: 'Inter';
-  font-weight: 400;
-  text-transform: capitalize;
-  word-wrap: break-word;
+color: black;
+font-size: 20px;
+font-family: 'Inter';
+font-weight: 400;
+text-transform: capitalize;
+word-wrap: break-word;
 }
