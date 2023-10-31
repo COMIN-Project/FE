@@ -24,13 +24,13 @@ function getFacilityData(nowFacility) {
         roomNumber: "5호관 101호",
         capacity: "2023.09.23",
         timeColors: "12:30 ~ 14:30",
-        buttonText: "예약하기"
+        buttonText: "건의하기"
       },
       {
         roomNumber: "102호",
         capacity: "10 ~ 18",
         timeColors: "11:30 ~ 13:30",
-        buttonText: "예약하기"
+        buttonText: "건의하기"
       }
     ];
   } else if(nowFacility === '이용예정 목록'){
@@ -39,7 +39,7 @@ function getFacilityData(nowFacility) {
         roomNumber: "5호관 101호",
         capacity: "2023.09.23",
         timeColors: "12:30 ~ 14:30",
-        buttonText: "예약하기"
+        buttonText: "건의하기"
       } 
     ];
   }  else if(nowFacility === '문의사항 확인'){
@@ -51,7 +51,6 @@ function getFacilityData(nowFacility) {
     ];
   }
 }
-
 
 const Inquire = () =>{
   const [selectedDate, setSelectedDate] = useState(new Date('2023-09-18'));

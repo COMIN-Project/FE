@@ -8,37 +8,25 @@ import './reserve.css';
 import Reservation from './reservation';
 
 const BlockItem = ({ roomNumber, capacity, timeColors}) => {
-  const [showReservation, setShowReservation] = useState(false);
-  const openReservation = () => {
-    setShowReservation(true);
-  };
-
-  const closeReservation = () => {
-    setShowReservation(false);
-  };
+ 
   return (
-    <li className='block'>
-      <span className='block-typo'>{roomNumber}</span>
-      <span className='block-typo'>{capacity}</span>
+    <li className="block">
+      <span className="block-typo">{roomNumber}</span>
+      <span className="block-typo">{capacity}</span>
       <span className="frame8">
-        {timeColors && timeColors.map((color, idx) => (
-          <span key={idx} className='rectangle' style={{ background: color }}></span>
-        ))}
+        {timeColors &&
+          timeColors.map((color, idx) => (
+            <span
+              key={idx}
+              className="rectangle"
+              style={{ background: color }}
+            ></span>
+          ))}
       </span>
-      <span className="frame7">
-        <button onClick={openReservation} component={Reservation}>예약하기</button>
-      </span>
-
-      {showReservation && (
-        <div className="modal">
-          <Reservation />
-          <button onClick={closeReservation}>닫기</button>
-        </div>
-      )}
-
+      <Reservation />
     </li>
   );
-}
+};
 
 function getFacilityData(nowFacility) {
   if (nowFacility === '5호관') {
