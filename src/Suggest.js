@@ -1,12 +1,25 @@
 import React, { useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import "./Suggest.css";
 
 function Suggest() {
-  const [selectedPlace, setSelectedPlace] = useState("");
-  const [selectedClass, setSelectedClass] = useState("");
+  const history = useHistory();
+  const location = useLocation();
+  const { selectedPlace: defaultSelectedPlace, selectedClass: defaultSelectedClass } = location.state || {};
+  const [selectedPlace, setSelectedPlace] = useState(defaultSelectedPlace || "");
+  const [selectedClass, setSelectedClass] = useState(defaultSelectedClass || "");
   const [selectedType, setSelectedType] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
+  const handleSuggestSubmit = () => {
+    // 건의하기 버튼을 눌렀을 때의 동작을 여기에 구현
+    // selectedPlace, selectedClass, selectedType, title, content 등의 상태 변수를 활용하여 데이터를 처리할 수 있음
+    // 예: API 호출, 상태 업데이트 등의 로직 수행 후 페이지 이동 등
+    console.log("건의하기 버튼 눌림");
+    // 예시: 성공적으로 처리되면 메인 페이지로 이동
+    history.push("/");
+  };
 
   const handlePlaceChange = (event) => {
     setSelectedPlace(event.target.value);
@@ -29,7 +42,7 @@ function Suggest() {
         return ["5동 104A", "5동 104B"];
       case "60주년 기념관":
         return ["101호", "102호", "103호"];
-      case "하이테크":
+      case "하이테크센터":
         return ["002호", "232호", "230호"];
       case "나빌레관":
         return ["가무연습실"];
@@ -93,7 +106,9 @@ function Suggest() {
         </div>
       </div>
 
-      <button className="check">확인</button>
+      <button className="check" onClick={handleSuggestSubmit}>
+        확인
+      </button>
     </>
   );
 }
