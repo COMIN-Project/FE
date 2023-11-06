@@ -8,7 +8,6 @@ import "./reserve.css";
 import Reservation from "./reservation";
 import './reservation.css';
 import Inquire from "./Inquire";
-//import { useHistory, useParams } from 'react-router-dom';
 import { render } from 'react-dom';
 
 
@@ -75,6 +74,10 @@ function getFacilityData(selectedPlace) {
   }
 }
 
+// const handleSelectedPlaceChange = (newPlace) => {
+//   setSelectedPlace(newPlace);
+// };
+
 const Reserve = () => {
   const [selectedDate, setSelectedDate] = useState(new Date(todayFormal()));
   const [showDatePicker, ShowDatePicker] = useState(false);
@@ -108,7 +111,6 @@ const Reserve = () => {
                     setSelectedDate(date);
                     ShowDatePicker(false);
                   }}
-                  //onChange={handleDateChange}
                   inline
                   locale={ko}
                 />
@@ -127,7 +129,7 @@ const Reserve = () => {
           </li>
           <li
             className="list-typo2"
-            onClick={() => setSelectedDate("60주년 기념관")}
+            onClick={() => setSelectedPlace("60주년 기념관")}
             style={selectedPlace === "60주년 기념관" ? selectedStyle : {}}
           >
             60주년 기념관
