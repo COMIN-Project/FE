@@ -303,6 +303,7 @@
   white-space: nowrap;
   margin-left: 10px;
   margin-right: 10px;
+
 }
 
 .frame3I-typo {
@@ -342,12 +343,17 @@
   padding: 0px 235px 2px 40px;
   align-items: center;
   color: black;
+
+  position: absolute;
+  left: 340px;
+  top: 160px;
 }
 
 .facility-right {
   display: flex;
   justify-content: flex-end;
   margin-right: 80px;
+
 }
 
 .block-typoI {
