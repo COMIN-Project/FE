@@ -61,7 +61,7 @@ function Suggest() {
           <option value="본관">본관</option>
           <option value="5호관">5호관</option>
           <option value="60주년 기념관">60주년 기념관</option>
-          <option value="하이테크">하이테크</option>
+          <option value="하이테크센터">하이테크센터</option>
           <option value="나빌레관">나빌레관</option>
           <option value="6호관">6호관</option>
         </select>

@@ -5,10 +5,11 @@ import Modal from "react-modal";
 import Slider from "react-slider";
 import "./slider.css";
 import "./reservation.css";
+import { format } from "date-fns"; <p className="Date-date"></p>
 
 Modal.setAppElement("#root");
 
-function Reservation() {
+function Reservation({ selectedPlace, selectedClass, selectedDate}) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [facilityName, setFacilityName] = useState("");
   const [reservationDate, setReservationDate] = useState("");
@@ -18,6 +19,8 @@ function Reservation() {
   const [endMinute, setEndMinute] = useState(0);
   const [companions, setCompanions] = useState([{ email: "", name: "" }]);
 
+  var nowdate=selectedDate;
+
   const handleOpenModal = () => {
     setModalIsOpen(true);
     setStartHour(9);
@@ -25,6 +28,7 @@ function Reservation() {
     setEndHour(21);
     setEndMinute(0);
     setCompanions([{ email: '', name: '' }]);
+    setReservationDate(selectedDate); 
   };
 
   const handleCloseModal = () => {
@@ -87,9 +91,10 @@ function Reservation() {
     const { value } = state;
 
     const trackStyle = {
-      left: `${((value[0] - bounds.min) / (bounds.max - bounds.min)) * 100}%`,
-      width: `${((value[1] - value[0]) / (bounds.max - bounds.min)) * 100}%`,
+      left: `${Math.floor(((value[0] - bounds.min) / (bounds.max - bounds.min)) * 24) * (100 / 24)}%`,
+      width: `${((Math.ceil(value[1]) - Math.floor(value[0])) / (bounds.max - bounds.min)) * (100 / 24)}%`,
     };
+    
 
     return (
       <>
@@ -98,10 +103,8 @@ function Reservation() {
             key={i}
             className={`mark`}
             style={{
-              left: `${(
-                (i / Math.floor(bounds.max - bounds.min)) *
-                100
-              ).toFixed(2)}%`,
+              left: `${(i / Math.floor(bounds.max - bounds.min) * 100).toFixed(2)}%`,
+              //marginLeft: "-80px"
             }}
           >
             {bounds.min + i}
@@ -117,6 +120,14 @@ function Reservation() {
 
   return (
     <div className="container">
+{console.log(nowdate)}
+
+       <style>
+        {`
+          .mark { width: 25px; height: 25px;}
+
+        `}
+      </style>
       <button className="예약하기" onClick={handleOpenModal}>
         예약하기
       </button>
@@ -135,21 +146,12 @@ function Reservation() {
       >
         <h2>예약하기</h2>
         <div className="reservation-info">
-          <h4>시설명</h4>
-          <input
-            type="text"
-            value={facilityName}
-            onChange={handleFacilityNameChange}
-            placeholder="시설명"
-          />
-          <h4>날짜</h4>
-          <input
-            type="date"
-            value={reservationDate}
-            onChange={handleReservationDateChange}
-          />
+        <h4>시설명: {selectedPlace} {selectedClass}</h4>
+        <h4>날짜: {selectedDate ? selectedDate.toLocaleDateString() : "날짜"}</h4>
+
         </div>
-        <div className="reservation-slider">
+
+        <div className="reservation-slider" style={{ width: "850px", height: "520px", margin: "auto", marginTop:"50px" }}>
           <Slider
             value={[startHour + startMinute / 60, endHour + endMinute / 60]}
             onChange={handleSliderChange}
@@ -159,7 +161,7 @@ function Reservation() {
             renderTrack={renderTrack}
           />
 
-          <div className="time-inputs">
+          <div className="time-inputs" style={{ width: "860px" }}>
             <div className="time-name">
               <div className="startTime-name">
                 <label htmlFor="startHour">시작 시간</label>
@@ -238,8 +240,8 @@ function Reservation() {
                 />
               </div>
             ))}
-
-            <button onClick={handleAddCompanion}>추가</button>
+            
+            <button style={{ marginLeft: "400px", marginTop:"150px"}} onClick={handleAddCompanion}>추가</button>
           </div>
         </div>
 
@@ -257,4 +259,4 @@ ReactDOM.render(
     <Reservation />
   </BrowserRouter>,
   document.getElementById("root")
-);
+); 
