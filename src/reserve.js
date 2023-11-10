@@ -47,14 +47,14 @@ function getFacilityData(selectedPlace) {
   if (selectedPlace === "5호관") {
     return [
       {
-        selectedClass: "101호",
+        selectedClass: "104A호",
         capacity: "10 ~ 20",
         timeColors: [
           "#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9",
         ],
       },
       {
-        selectedClass: "104호",
+        selectedClass: "104B호",
         capacity: "10 ~ 20",
         timeColors: [
           "#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9",
@@ -64,7 +64,7 @@ function getFacilityData(selectedPlace) {
   } else {
     return [
       {
-        selectedClass: "1042호",
+        selectedClass: "101호",
         capacity: "1 ~ 20",
         timeColors: [
           "#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9","#D9D9D9",
@@ -73,10 +73,6 @@ function getFacilityData(selectedPlace) {
     ];
   }
 }
-
-// const handleSelectedPlaceChange = (newPlace) => {
-//   setSelectedPlace(newPlace);
-// };
 
 const Reserve = () => {
   const [selectedDate, setSelectedDate] = useState(new Date(todayFormal()));

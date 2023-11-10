@@ -5,7 +5,8 @@ import Modal from "react-modal";
 import Slider from "react-slider";
 import "./slider.css";
 import "./reservation.css";
-import { format } from "date-fns"; <p className="Date-date"></p>
+import { format } from "date-fns";
+import fetchReservation from "./fetchReservation";
 
 Modal.setAppElement("#root");
 
@@ -20,6 +21,24 @@ function Reservation({ selectedPlace, selectedClass, selectedDate}) {
   const [companions, setCompanions] = useState([{ email: "", name: "" }]);
 
   var nowdate=selectedDate;
+
+  const handleConfirm = async () => {
+    const reservationData = {
+      selectedPlace,
+      selectedClass,
+      selectedDate,
+    };
+
+    try {
+      await fetchReservation(reservationData);
+      console.log("데이터 전송 성공");
+    } catch (error) {
+      console.error("데이터 전송 에러:", error);
+    }
+
+    // 모달 닫기
+    setModalIsOpen(false);
+  };
 
   const handleOpenModal = () => {
     setModalIsOpen(true);
@@ -89,30 +108,28 @@ function Reservation({ selectedPlace, selectedClass, selectedDate}) {
 
   const renderTrack = (props, state) => {
     const { value } = state;
-
+  
     const trackStyle = {
       left: `${Math.floor(((value[0] - bounds.min) / (bounds.max - bounds.min)) * 24) * (100 / 24)}%`,
       width: `${((Math.ceil(value[1]) - Math.floor(value[0])) / (bounds.max - bounds.min)) * (100 / 24)}%`,
     };
-    
-
+  
     return (
       <>
         {[...Array(Math.floor(bounds.max - bounds.min) + 1)].map((_, i) => (
           <span
-            key={i}
+            key={i} // 고유한 key 값 추가
             className={`mark`}
             style={{
               left: `${(i / Math.floor(bounds.max - bounds.min) * 100).toFixed(2)}%`,
-              //marginLeft: "-80px"
             }}
           >
             {bounds.min + i}
           </span>
         ))}
-
+  
         <div {...props} className="track" />
-
+  
         {value && <div className="slider-fill" style={trackStyle} />}
       </>
     );
@@ -245,8 +262,8 @@ function Reservation({ selectedPlace, selectedClass, selectedDate}) {
           </div>
         </div>
 
-        <button className="check" onClick={handleCloseModal}>
-          확인
+        <button className="check" onClick={handleConfirm}>
+        확인
         </button>
       </Modal>
     </div>
