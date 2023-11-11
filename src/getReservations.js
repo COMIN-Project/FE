@@ -12,8 +12,8 @@ const getReservations = async () => {
     console.log("Fetched reservations:", JSON.stringify(reservations, null, 2));
 
     return reservations.map(reservation => ({
-      selectedPlace: reservation.roomId.roomName,
-      selectedClass: reservation.roomName,
+      selectedPlace: reservation.roomId.facilityId.facilityName,
+      selectedClass: reservation.roomId.roomName,
       selectedDate: reservation.reservationDate,
       startTime: reservation.startTime,
       endTime: reservation.endTime,

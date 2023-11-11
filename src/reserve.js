@@ -10,7 +10,6 @@ import './reservation.css';
 import Inquire from "./Inquire";
 import { render } from 'react-dom';
 
-
 import Modal from 'react-modal';
 Modal.setAppElement('#root');
 
