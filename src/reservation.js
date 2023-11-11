@@ -10,7 +10,13 @@ import fetchReservation from "./fetchReservation";
 
 Modal.setAppElement("#root");
 
-function Reservation({ selectedPlace, selectedClass, selectedDate}) {
+function Reservation({
+  selectedPlace,
+  selectedClass,
+  selectedDate,
+  isLoggedIn,
+  userID,
+}) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [facilityName, setFacilityName] = useState("");
   const [reservationDate, setReservationDate] = useState("");
@@ -20,13 +26,20 @@ function Reservation({ selectedPlace, selectedClass, selectedDate}) {
   const [endMinute, setEndMinute] = useState(0);
   const [companions, setCompanions] = useState([{ email: "", name: "" }]);
 
-  var nowdate=selectedDate;
+  var nowdate = selectedDate;
 
   const handleConfirm = async () => {
     const reservationData = {
-      selectedPlace,
-      selectedClass,
-      selectedDate,
+      userId: isLoggedIn ? { "userId": userID } : null,
+    companions: companions.map((companion) => companion.userId),
+    roomId: { "roomId": selectedClass },
+    startTime: `${format(selectedDate, "yyyy-MM-dd")}T${startHour
+      .toString()
+      .padStart(2, "0")}:${startMinute.toString().padStart(2, "0")}:00`,
+    endTime: `${format(selectedDate, "yyyy-MM-dd")}T${endHour
+      .toString()
+      .padStart(2, "0")}:${endMinute.toString().padStart(2, "0")}:00`,
+    reservationDate: format(selectedDate, "yyyy-MM-dd"),
     };
 
     try {
@@ -46,17 +59,17 @@ function Reservation({ selectedPlace, selectedClass, selectedDate}) {
     setStartMinute(0);
     setEndHour(21);
     setEndMinute(0);
-    setCompanions([{ email: '', name: '' }]);
-    setReservationDate(selectedDate); 
+    setCompanions([{ email: "", name: "" }]);
+    setReservationDate(selectedDate);
   };
 
   const handleCloseModal = () => {
     setModalIsOpen(false);
     setStartHour(9);
     setStartMinute(0);
-    setEndHour(21); 
-    setEndMinute (0);
-    setCompanions([{ email: '', name: '' }]);
+    setEndHour(21);
+    setEndMinute(0);
+    setCompanions([{ email: "", name: "" }]);
   };
 
   const handleAddCompanion = () => {
@@ -108,12 +121,19 @@ function Reservation({ selectedPlace, selectedClass, selectedDate}) {
 
   const renderTrack = (props, state) => {
     const { value } = state;
-  
+
     const trackStyle = {
-      left: `${Math.floor(((value[0] - bounds.min) / (bounds.max - bounds.min)) * 24) * (100 / 24)}%`,
-      width: `${((Math.ceil(value[1]) - Math.floor(value[0])) / (bounds.max - bounds.min)) * (100 / 24)}%`,
+      left: `${
+        Math.floor(((value[0] - bounds.min) / (bounds.max - bounds.min)) * 24) *
+        (100 / 24)
+      }%`,
+      width: `${
+        ((Math.ceil(value[1]) - Math.floor(value[0])) /
+          (bounds.max - bounds.min)) *
+        (100 / 24)
+      }%`,
     };
-  
+
     return (
       <>
         {[...Array(Math.floor(bounds.max - bounds.min) + 1)].map((_, i) => (
@@ -121,15 +141,18 @@ function Reservation({ selectedPlace, selectedClass, selectedDate}) {
             key={i} // 고유한 key 값 추가
             className={`mark`}
             style={{
-              left: `${(i / Math.floor(bounds.max - bounds.min) * 100).toFixed(2)}%`,
+              left: `${(
+                (i / Math.floor(bounds.max - bounds.min)) *
+                100
+              ).toFixed(2)}%`,
             }}
           >
             {bounds.min + i}
           </span>
         ))}
-  
+
         <div {...props} className="track" />
-  
+
         {value && <div className="slider-fill" style={trackStyle} />}
       </>
     );
@@ -137,9 +160,9 @@ function Reservation({ selectedPlace, selectedClass, selectedDate}) {
 
   return (
     <div className="container">
-{console.log(nowdate)}
+      {console.log(nowdate)}
 
-       <style>
+      <style>
         {`
           .mark { width: 25px; height: 25px;}
 
@@ -163,12 +186,23 @@ function Reservation({ selectedPlace, selectedClass, selectedDate}) {
       >
         <h2>예약하기</h2>
         <div className="reservation-info">
-        <h4>시설명: {selectedPlace} {selectedClass}</h4>
-        <h4>날짜: {selectedDate ? selectedDate.toLocaleDateString() : "날짜"}</h4>
-
+          <h4>
+            시설명: {selectedPlace} {selectedClass}
+          </h4>
+          <h4>
+            날짜: {selectedDate ? selectedDate.toLocaleDateString() : "날짜"}
+          </h4>
         </div>
 
-        <div className="reservation-slider" style={{ width: "850px", height: "520px", margin: "auto", marginTop:"50px" }}>
+        <div
+          className="reservation-slider"
+          style={{
+            width: "850px",
+            height: "520px",
+            margin: "auto",
+            marginTop: "50px",
+          }}
+        >
           <Slider
             value={[startHour + startMinute / 60, endHour + endMinute / 60]}
             onChange={handleSliderChange}
@@ -257,13 +291,18 @@ function Reservation({ selectedPlace, selectedClass, selectedDate}) {
                 />
               </div>
             ))}
-            
-            <button style={{ marginLeft: "400px", marginTop:"150px"}} onClick={handleAddCompanion}>추가</button>
+
+            <button
+              style={{ marginLeft: "400px", marginTop: "150px" }}
+              onClick={handleAddCompanion}
+            >
+              추가
+            </button>
           </div>
         </div>
 
         <button className="check" onClick={handleConfirm}>
-        확인
+          확인
         </button>
       </Modal>
     </div>
@@ -276,4 +315,4 @@ ReactDOM.render(
     <Reservation />
   </BrowserRouter>,
   document.getElementById("root")
-); 
+);

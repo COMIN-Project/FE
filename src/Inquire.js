@@ -1,13 +1,14 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { ko } from "date-fns/locale";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./reserve.css";
+import getReservations from "./getReservations";
 
-const BlockItem = ({ selectedPlace, selectedClass, capacity, timeColors, buttonText }) => {
+const BlockItem = ({ selectedPlace, selectedClass, selectedDate, startTime, endTime, buttonText }) => {
   const history = useHistory();
  
   const onSelectPlaceAndClass = () => {
@@ -27,13 +28,13 @@ const BlockItem = ({ selectedPlace, selectedClass, capacity, timeColors, buttonT
     }
   };
 
-
   return (
     <li className="block">
       <span className="block-typoI">{selectedPlace}</span>
       <span className="block-typoI">{selectedClass}</span>
-      <span className="block-typoI">{capacity}</span>
-      <span className="block-typoI">{timeColors}</span>
+      <span className="block-typoI">{selectedDate}</span>
+      <span className="block-typoI">{startTime}</span>
+      <span className="block-typoI">{endTime}</span>
       <span className="frame7I">
         <a className="frame7-typo" onClick={onSelectPlaceAndClass}>
           {buttonText}
@@ -49,102 +50,10 @@ function getFacilityData(nowFacility) {
       {
         selectedPlace : "본관",
         selectedClass : "중강당",
-        capacity: "20",
+        selectedDate: "20",
         timeColors: "12:30 ~ 14:30",
         buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "본관",
-        selectedClass : "대강당",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "5호관",
-        selectedClass : "5동 104A",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "5호관",
-        selectedClass : "5동 104B",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "60주년 기념관",
-        selectedClass : "101호",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "60주년 기념관",
-        selectedClass : "102호",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "60주년 기념관",
-        selectedClass : "103호",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "하이테크센터",
-        selectedClass : "002호",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "하이테크센터",
-        selectedClass : "232호",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "하이테크센터",
-        selectedClass : "230호",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "나빌레관",
-        selectedClass : "가무연습실",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "6호관",
-        selectedClass : "101호",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "6호관",
-        selectedClass : "102호",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-      {
-        selectedPlace : "6호관",
-        selectedClass : "103호",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-    
+      }
       
     ];
   } else if (nowFacility === "이용예정 목록") {
@@ -175,6 +84,24 @@ const Inquire = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [nowFacility, setNowFacility] = useState("나의 이용내역");
   const facilityData = getFacilityData(nowFacility);
+
+  const [reservations, setReservations] = useState([]); // 예약 데이터를 저장할 상태 추가
+
+  const history = useHistory();
+
+  useEffect(() => {
+    // 컴포넌트가 마운트된 후에 GET 요청을 보내고 데이터를 받아옴
+    const fetchData = async () => {
+      try {
+        const reservationsData = await getReservations();
+        setReservations(reservationsData);
+      } catch (error) {
+        console.error("Error fetching reservations:", error);
+      }
+    };
+
+    fetchData();
+  }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 함
 
   const [showDatePicker1, setShowDatePicker1] = useState(false);
   const [showDatePicker2, setShowDatePicker2] = useState(false);
@@ -313,20 +240,19 @@ const Inquire = () => {
             <li className="frame6">
               <span className="frame6-typo">시설명</span>
               <span className="frame6-typo">강의실명</span>
-              <span className="frame6-typo">수용인원</span>
+              <span className="frame6-typo">이용날짜</span>
               <span className="frame6-typo">이용시간</span>
               <span className="frame6-typo">예약</span>
             </li>
-            {facilityData.map((item, index) => (
+            {reservations.map((item, index) => (
               <BlockItem
                 key={index}
                 selectedPlace={item.selectedPlace}
                 selectedClass={item.selectedClass}
-                capacity={item.capacity}
-                timeColors={item.timeColors}
+                selectedDate={item.selectedDate}
+                startTime={item.startTime}
+                endTime={item.endTime}
                 buttonText={item.buttonText}
-              
-            
               />
             ))}
           </ul>
