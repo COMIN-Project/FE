@@ -41,7 +41,6 @@ const BlockItem = ({ selectedClass, capacity, timeColors, selectedPlace, selecte
   );
 };
 
-
 function getFacilityData(selectedPlace) {
   if (selectedPlace === "5호관") {
     return [
@@ -73,7 +72,8 @@ function getFacilityData(selectedPlace) {
   }
 }
 
-const Reserve = () => {
+const Reserve = (props) => {
+  console.log("Navbar에서 Reserve로 전달된 props:", props);
   const [selectedDate, setSelectedDate] = useState(new Date(todayFormal()));
   const [showDatePicker, ShowDatePicker] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState("5호관");
@@ -84,9 +84,7 @@ const Reserve = () => {
   };
   
   return (
-    
     <>
-
       <div id="reDate">
         <ul className="Date">
           <li className="Date-name">
@@ -116,7 +114,6 @@ const Reserve = () => {
         </ul>
       </div>
  
-
       <div id="reList">
         <ul className="List">
           <li className="list-up">
@@ -188,7 +185,7 @@ const Reserve = () => {
         <div id="frame5">
           <ul className="frame5">
             <li className="frame6">
-              <span className="frame6-typo">이름</span>
+              <span className="frame6-typo">강의실명</span>
               <span className="frame6-typo">수용인원</span>
               <span className="frame6-typo">이용시간</span>
               <span className="frame6-typo">예약</span>

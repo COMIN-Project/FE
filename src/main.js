@@ -58,7 +58,6 @@ function SpaceDetail6() {
 function MainApp() {
   return (
     <div className="App">
-      <Reservation />
       <div className="maintitle">
         <p>인하대학교</p> <br></br>
         <b>시설예약시스템</b>

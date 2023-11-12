@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import Modal from "react-modal";
@@ -28,19 +28,31 @@ function Reservation({
 
   var nowdate = selectedDate;
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      setCompanions([{ email: "", name: "", userId: userID }]);
+    }
+  }, [isLoggedIn, userID]);
+
   const handleConfirm = async () => {
+    console.log("Current userID:", userID);
+
     const reservationData = {
-      userId: isLoggedIn ? { "userId": userID } : null,
-    companions: companions.map((companion) => companion.userId),
-    roomId: { "roomId": selectedClass },
-    startTime: `${format(selectedDate, "yyyy-MM-dd")}T${startHour
-      .toString()
-      .padStart(2, "0")}:${startMinute.toString().padStart(2, "0")}:00`,
-    endTime: `${format(selectedDate, "yyyy-MM-dd")}T${endHour
-      .toString()
-      .padStart(2, "0")}:${endMinute.toString().padStart(2, "0")}:00`,
-    reservationDate: format(selectedDate, "yyyy-MM-dd"),
+      userId: isLoggedIn ? { userId: userID } : null,
+      companions: companions.map((companion) => companion.userId || null),
+      roomId: { roomId: selectedClass },
+      startTime: `${format(selectedDate, "yyyy-MM-dd")}T${startHour
+        .toString()
+        .padStart(2, "0")}:${startMinute.toString().padStart(2, "0")}:00`,
+      endTime: `${format(selectedDate, "yyyy-MM-dd")}T${endHour
+        .toString()
+        .padStart(2, "0")}:${endMinute.toString().padStart(2, "0")}:00`,
+      reservationDate: format(selectedDate, "yyyy-MM-dd"),
     };
+
+    if (reservationData.userId) {
+      reservationData.userId = reservationData.userId.userId;
+    }
 
     try {
       await fetchReservation(reservationData);
@@ -49,7 +61,6 @@ function Reservation({
       console.error("데이터 전송 에러:", error);
     }
 
-    // 모달 닫기
     setModalIsOpen(false);
   };
 

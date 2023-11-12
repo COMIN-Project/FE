@@ -3,13 +3,13 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ onLoginClick }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userID, setUserID] = useState("")
+  const [userID, setUserID] = useState("");
 
   const handleLoginClick = () => {
-    setIsLoggedIn(!isLoggedIn); // 로그인 버튼 클릭 시 로그인/로그아웃 상태 토글
-    setUserID(isLoggedIn ? "" : "송유민");
+    setIsLoggedIn(!isLoggedIn);
+    setUserID(isLoggedIn ? "" : "1");
   };
   return (
     <nav className="Navbar navbar navbar-expand-lg navbar-light bg-light">
@@ -27,7 +27,7 @@ const Navbar = () => {
 
       <div className="collapse navbar-collapse" id="navContainer">
         <Link to="/" style={{ textDecoration: "none" }}>
-          <ul className="navbar-nav container">
+          <ul className="navbar-nav" style={{ margin: "70px" }}>
             <li className="nav-item container-star">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +53,10 @@ const Navbar = () => {
         <ul className="navbar-nav navLink">
           <li className="nav-item navLink-part">
             <Link
-              to="/reserve"
+              to={{
+                pathname: "/reserve",
+                state: { isLoggedIn: isLoggedIn, userID: userID },
+              }}
               style={{ textDecoration: "none", color: "black" }}
             >
               시설 예약
@@ -61,7 +64,10 @@ const Navbar = () => {
           </li>
           <li className="nav-item navLink-part">
             <Link
-              to="/Search"
+              to={{
+                pathname: "/Search",
+                state: { isLoggedIn: isLoggedIn, userID: userID },
+              }}
               style={{ textDecoration: "none", color: "black" }}
             >
               빠른찾기
@@ -74,7 +80,10 @@ const Navbar = () => {
           </li>
           <li className="nav-item navLink-part">
             <Link
-              to="/Suggest"
+              to={{
+                pathname: "/Suggest",
+                state: { isLoggedIn: isLoggedIn, userID: userID },
+              }}
               style={{ textDecoration: "none", color: "black" }}
             >
               건의하기
@@ -82,7 +91,10 @@ const Navbar = () => {
           </li>
           <li className="nav-item navLink-part">
             <Link
-              to="/Inquire"
+              to={{
+                pathname: "/Inquire",
+                state: { isLoggedIn: isLoggedIn, userID: userID },
+              }}
               style={{ textDecoration: "none", color: "black" }}
             >
               내역조회
@@ -96,7 +108,6 @@ const Navbar = () => {
           <li className="nav-item login" onClick={handleLoginClick}>
             <a>{isLoggedIn ? `로그아웃 (${userID})` : "로그인"}</a>
           </li>
-          {/* 로그인을 눌렀을 때(=로그인이 안 된 경우) USERS API를 이용해 유저 정보를 받아오는 걸로 */}
           <li>
             <svg
               xmlns="http://www.w3.org/2000/svg"

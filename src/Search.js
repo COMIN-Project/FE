@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Calendar from 'react-calendar'; // react-calendar 라이브러리 추가
-import 'react-calendar/dist/Calendar.css'; // react-calendar 스타일 추가
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import './Search.css';
 
 function Search() {
-  const [selectedPeople, setSelectedPeople] = useState(1); // 기본값을 1로 설정
-  const [selectedDate, setSelectedDate] = useState(new Date()); // 기본값 : 현재 날짜
+  const [selectedPeople, setSelectedPeople] = useState(1);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedHour, setSelectedHour] = useState('09');
   const [selectedMinutes, setSelectedMinutes] = useState('00');
   const [isCalendarVisible, setIsCalendarVisible] = useState(true);
@@ -65,7 +65,7 @@ function Search() {
                 onChange={handleHourChange}
                 >
                     {Array.from({ length: 13 }, (_, index) => {
-                    const hour = index + 9; // 09부터 21까지의 시간
+                    const hour = index + 9;
                     const formattedHour = hour < 10 ? `0${hour}` : `${hour}`;
                     return <option key={formattedHour} value={formattedHour}>{formattedHour}</option>;
                     })}

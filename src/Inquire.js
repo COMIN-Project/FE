@@ -5,12 +5,19 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "./reserve.css";
+import "./Inquire.css";
 import getReservations from "./getReservations";
 
-const BlockItem = ({ selectedPlace, selectedClass, selectedDate, startTime, endTime, buttonText }) => {
+const BlockItem = ({
+  selectedPlace,
+  selectedClass,
+  selectedDate,
+  startTime,
+  endTime,
+  buttonText,
+}) => {
   const history = useHistory();
- 
+
   const onSelectPlaceAndClass = () => {
     // 함수 매개변수로 전달된 selectedPlace와 selectedClass를 직접 사용할 수 있습니다.
     if (selectedPlace && selectedClass) {
@@ -19,8 +26,8 @@ const BlockItem = ({ selectedPlace, selectedClass, selectedDate, startTime, endT
         pathname: "/suggest",
         state: {
           selectedPlace: selectedPlace,
-          selectedClass: selectedClass
-        }
+          selectedClass: selectedClass,
+        },
       });
     } else {
       // 선택된 장소나 강의실이 없을 때 예외 처리 (선택 필요 메시지 등을 표시할 수 있음)
@@ -28,16 +35,18 @@ const BlockItem = ({ selectedPlace, selectedClass, selectedDate, startTime, endT
     }
   };
 
+  // startTime과 endTime을 'startTime' - 'endTime' 형식으로 조합
+  const formattedTime = `${startTime} - ${endTime}`;
+
   return (
     <li className="block">
       <span className="block-typoI">{selectedPlace}</span>
       <span className="block-typoI">{selectedClass}</span>
       <span className="block-typoI">{selectedDate}</span>
-      <span className="block-typoI">{startTime}</span>
-      <span className="block-typoI">{endTime}</span>
+      <span className="block-typoI">{formattedTime}</span>
       <span className="frame7I">
         <a className="frame7-typo" onClick={onSelectPlaceAndClass}>
-          {buttonText}
+          건의하기
         </a>
       </span>
     </li>
@@ -48,19 +57,18 @@ function getFacilityData(nowFacility) {
   if (nowFacility === "나의 이용내역") {
     return [
       {
-        selectedPlace : "본관",
-        selectedClass : "중강당",
+        selectedPlace: "본관",
+        selectedClass: "중강당",
         selectedDate: "20",
         timeColors: "12:30 ~ 14:30",
         buttonText: "건의하기",
-      }
-      
+      },
     ];
   } else if (nowFacility === "이용예정 목록") {
     return [
       {
-        selectedPlace : "5호관",
-        selectedClass : "5동 104A",
+        selectedPlace: "5호관",
+        selectedClass: "5동 104A",
         capacity: "20",
         timeColors: "12:30 ~ 14:30",
         buttonText: "건의하기",
@@ -69,8 +77,8 @@ function getFacilityData(nowFacility) {
   } else if (nowFacility === "문의사항 확인") {
     return [
       {
-        selectedPlace : "나빌레관",
-        selectedClass : "가무연습실",
+        selectedPlace: "나빌레관",
+        selectedClass: "가무연습실",
         capacity: "20",
         timeColors: "12:30 ~ 14:30",
         buttonText: "건의하기",

@@ -8,7 +8,6 @@ const getReservations = async () => {
 
     const reservations = await response.json();
 
-    // 여기서 가져온 데이터를 출력하여 확인할 수 있습니다.
     console.log("Fetched reservations:", JSON.stringify(reservations, null, 2));
 
     return reservations.map(reservation => ({

@@ -5,7 +5,6 @@
   border-bottom: 1px solid #000; 
   }
 
-  /*logo + part*/
   .container {
     display: inline-flex;
     justify-content: center;
@@ -20,7 +19,6 @@
     fill: var(--Blue, #149BFC);
   }
   
-  /* Logo 부분에 대한 스타일 */
   .container-logo {
     color: var(--Black, #000);
     font-family: 'Inter';
@@ -31,7 +29,6 @@
     text-transform: capitalize;
   }
   
-  /*링크페이지 묶음*/
   .navLink{
     display: flex;
   width: 906px;
@@ -41,7 +38,6 @@
   flex-shrink: 0;
   }
   
-  /*각 링크페이지*/
   .navLink-part{
     color: var(--Black, #000);
   font-family: Inter;
