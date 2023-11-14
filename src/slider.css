@@ -15,9 +15,9 @@
     line-height: 25px;
     width: 25px;
     text-align: center;
-    background-color: white; 
-    color: #ffffff; 
-    border-radius: 50%; 
+    background-color: white;
+    color: #ffffff;
+    border-radius: 50%;
 
    box-shadow: 0px 6px 13px rgba(0, 0, 0, 0.12);
    background: white;
@@ -26,7 +26,7 @@
 .track {
    background-color: #3C3C432E;
    opacity:18;
-   height: 5px; 
+   height: 5px;
 }
 
 .time-inputs {
@@ -44,7 +44,7 @@
 
     color: black;
     font-size: 24px;
-    font-family: Inter;
+    font-family: 'Pretendard';
     font-weight: 400;
     text-transform: capitalize;
     word-wrap: break-word;
@@ -69,7 +69,7 @@
     margin-right:50px;
     color: black;
     font-size: 30px;
-    font-family: 'Inter';
+    font-family: 'Pretendard';
     font-weight: 400;
     text-transform: capitalize;
     word-wrap: break-word;
@@ -85,7 +85,7 @@
 
     color: black;
     font-size: 24px;
-    font-family: 'Inter';
+    font-family: 'Pretendard';
     font-weight: 400;
      text-transform: capitalize;
     word-wrap: break-word;
@@ -101,7 +101,7 @@
 
     color: black;
     font-size: 24px;
-    font-family: 'Inter';
+    font-family: 'Pretendard';
     font-weight: 400;
      text-transform: capitalize;
     word-wrap: break-word;
@@ -116,7 +116,7 @@
 
     color: black;
     font-size: 24px;
-    font-family: 'Inter';
+    font-family: 'Pretendard';
     font-weight: 400;
     text-transform: capitalize;
     word-wrap: break-word;
@@ -143,7 +143,7 @@
 
     color: black;
     font-size: 24px;
-    font-family: 'Inter';
+    font-family: 'Pretendard';
     font-weight: 400;
     text-transform: capitalize;
     word-wrap: break-word;
@@ -159,7 +159,7 @@
 
     color: black;
     font-size: 24px;
-    font-family: 'Inter';
+    font-family: 'Pretendard';
     font-weight: 400;
     text-transform: capitalize;
     word-wrap: break-word;
@@ -174,12 +174,12 @@
     border-radius: 3px;
     background-color: #6187D280;
     opacity: 50%;
-    overflow: hidden; 
+    overflow: hidden;
     border: none;
 
     color: white;
     font-size: 24px;
-    font-family: 'Inter';
+    font-family: 'Pretendard';
     font-weight: 400;
     text-transform: capitalize;
     word-wrap: break-word;
@@ -194,18 +194,18 @@
     height: 50px;
     border-radius: 5px;
 
-    overflow: hidden; 
+    overflow: hidden;
     border: 1px solid;
     z-index: inherit;
 
     background-color: #6187D280;
     opacity: 50%;
-    color: #FFFFFF; 
+    color: #FFFFFF;
     padding: 10px 20px;
     border: none;
 
     font-size: 25px;
-    font-family: 'Inter';
+    font-family: 'Pretendard';
     font-weight: 400;
     text-transform: capitalize;
     word-wrap: break-word;
@@ -216,19 +216,19 @@
     display: flex;
     margin-right:30px;
     margin-top: 10px;
-    
+
     position: relative;
     top: 200px;
     left: 45px;
 
     color: black;
     font-size: 30px;
-    font-family: 'Inter';
+    font-family: 'Pretendard';
     font-weight: 400;
     text-transform: capitalize;
     word-wrap: break-word;
   }
-  
+
   .companion-blank input[type="email"],
   .companion-blank input[type="text"] {
     margin-right:40px;
@@ -240,7 +240,7 @@
 
     color: black;
     font-size: 24px;
-    font-family: 'Inter';
+    font-family: 'Pretendard';
     font-weight: 400;
     text-transform: capitalize;
     word-wrap: break-word;

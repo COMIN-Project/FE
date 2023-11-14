@@ -10,7 +10,7 @@
   height : 45px;
   color: black;
   font-size: 36px;
-  font-family: 'Inter';
+  font-family: 'Pretendard';
   font-weight: 400;
   text-transform: capitalize;
   word-wrap: break-word;
@@ -20,10 +20,10 @@
   width : 150px;
   height : 45px;
   margin-left : 319px;
-  
+
   color: black;
   font-size: 36px;
-  font-family: 'Inter';
+  font-family: 'Pretendard';
   font-weight: 400;
   text-transform: capitalize;
   word-wrap: break-word;
@@ -42,7 +42,7 @@
 
   color: black;
   font-size: 24px;
-  font-family: Inter;
+  font-family: 'Pretendard';
   font-weight: 400;
   text-transform: capitalize;
   word-wrap: break-word;
@@ -56,7 +56,7 @@
   top: 7px;
 
   font-size: 24px;
-  font-family: 'Inter';
+  font-family: 'Pretendard';
   font-weight: 400;
   color: black;
   text-align: center;
@@ -87,7 +87,7 @@
   width: 200px;
   height: 60px;
   font-size: 24px;
-  font-family: 'Inter';
+  font-family: 'Pretendard';
   font-weight: 400;
   text-transform: capitalize;
   border: none;
@@ -122,7 +122,7 @@
   border-radius: 5px;
   border: none;
   font-size: 24px;
-  font-family: 'Inter';
+  font-family: 'Pretendard';
   font-weight: 400;
   color: black;
   text-align: center;
@@ -137,7 +137,7 @@
   top: 0px;
 
   font-size: 24px;
-  font-family: 'Inter';
+  font-family: 'Pretendard';
   font-weight: 400;
   color: black;
   text-align: center;
@@ -152,7 +152,7 @@
 .unit {
   margin-left: 5px;
   font-size: 24px;
-  font-family: 'Inter';
+  font-family: 'Pretendard';
   font-weight: 400;
   color: black;
 }
@@ -215,13 +215,13 @@
 }
 
 .search {
-width: 200px; 
-height: 80px; 
+width: 200px;
+height: 80px;
 position: absolute;
 left : 1270px;
 top : 880px;
 border-radius: 5px;
-overflow: hidden; 
+overflow: hidden;
 border: 1px solid;
 z-index: inherit;
 
@@ -232,7 +232,7 @@ padding: 10px 20px;
 border: none;
 
 font-size: 35px;
-font-family: 'Inter';
+font-family: 'Pretendard';
 font-weight: 400;
 text-transform: capitalize;
 word-wrap: break-word;
@@ -268,8 +268,8 @@ border: none;
 }
 
 .blue-bar {
-width: 1200px; 
-height: 0px; 
+width: 1200px;
+height: 0px;
 border: 2px #0066B2 solid;
 }
 
@@ -291,7 +291,7 @@ top: 18px;
 
 color: black;
 font-size: 20px;
-font-family: 'Inter';
+font-family: 'Pretendard';
 font-weight: 400;
 text-transform: capitalize;
 word-wrap: break-word;

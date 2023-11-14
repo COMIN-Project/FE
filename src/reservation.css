@@ -12,7 +12,7 @@
   margin: 0;
   color: black;
   font-size: 30px;
-  font-family: 'Inter';
+  font-family: 'Pretendard';
   font-weight: 400;
   text-transform: capitalize;
   word-wrap: break-word;
@@ -30,7 +30,7 @@
   left: 20px;
   color: black;
   font-size: 24px;
-  font-family: 'Inter';
+  font-family: 'Pretendard';
   font-weight: 400;
   text-transform: capitalize;
   word-wrap: break-word;
@@ -54,13 +54,13 @@
 
   color: black;
   font-size: 24px;
-  font-family: 'Inter';
+  font-family: 'Pretendard';
   font-weight: 400;
   text-transform: capitalize;
 }
 
 .mark::after {
-  content:''; 
+  content:'';
   display:block;
 }
 
