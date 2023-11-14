@@ -1,100 +1,74 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import Slider from 'react-slider';
-import './main.css';
-import './slider.css';
-import Reservation from './reservation';
+import React from "react";
 
-function SpaceDetail1() {
-  return (
-    <div className="SpaceDetail1">
-      <h6>본관</h6>
-      <p>중강강, 대강당</p>
-    </div>
-  )
-}
-function SpaceDetail2() {
-  return (
-    <div className="SpaceDetail2">
-      <h6>5호관</h6>
-      <p>소강당(공연용), 1층 강의실</p>
-    </div>
-  )
-}
-function SpaceDetail3() {
-  return (
-    <div className="SpaceDetail3">
-      <h6>60주년 기념관</h6>
-      <p>강당, 창업지원단 강의실, 컴퓨터 있는 곳 등등 세부사항 기재예정</p>
-    </div>
-  )
-}
-function SpaceDetail4() {
-  return (
-    <div className="SpaceDetail4">
-      <h6>하이테크</h6>
-      <p>중강당, 대강당, 강의실</p>
-    </div>
-  )
-}
-function SpaceDetail5() {
-  return (
-    <div className="SpaceDetail5">
-      <h6>나빌레관</h6>
-      <p>가무연습실</p>
-    </div>
-  )
-}
-function SpaceDetail6() {
-  return (
-    <div className="SpaceDetail6">
-      <h6>6호관</h6>
-      <p>강의실</p>
-    </div>
-  )
-}
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router } from "react-router-dom";
+
+export const BUILDINGS = [
+  {
+    title: "본관",
+    description: "대강당, 중강당",
+    value: "main",
+  },
+  {
+    title: "5호관",
+    description: "소강당(공연용), 1층 강의실",
+    value: "5",
+  },
+  {
+    title: "60주년 기념관",
+    description: "강당, 창업지원단 강의실, 컴퓨터 있는 곳",
+    value: "60",
+  },
+  {
+    title: "하이테크",
+    description: "중강당, 대강당, 강의실",
+    value: "hiTech",
+  },
+  {
+    title: "나빌레관",
+    description: "가무연습실",
+    value: "naville",
+  },
+  {
+    title: "6호관",
+    description: "강의실",
+    value: "6",
+  },
+];
 
 function MainApp() {
+  const onClickBuilding = (value) => () => {
+    window.location.href = `/Search?building=${value}`;
+  };
   return (
-    <div className="App">
-      <div className="maintitle">
-        <p>인하대학교</p> <br></br>
-        <b>시설예약시스템</b>
-      </div>
+    <div className='relative flex items-center justify-center pt-20'>
+      <img src='/img/bg.jpg' className='absolute top-0 left-0 w-screen h-screen -z-10' />
+      <section className='p-20 w-full'>
+        <div className='w-full flex flex-col justify-center mt-40 text-5xl whitespace-pre-wrap mb-20'>
+          <p className='w-full font-semibold'>인하대학교</p>
+          <p className='font-bold'>시설예약시스템</p>
+        </div>
 
-      <div class="box-wrap1">
-        <Router>
-          <Link to='/60주년기념관1'><SpaceDetail1></SpaceDetail1></Link>
-          <Link to='/5호관2'><SpaceDetail3></SpaceDetail3></Link>
-          <Link to='/60주년기념관3'><SpaceDetail5></SpaceDetail5></Link>
-          <Route exact path="/60주년기념관1"><SpaceDetail1></SpaceDetail1></Route> 
-          <Route exact path="/5호관2"><SpaceDetail3></SpaceDetail3></Route> 
-          <Route exact path="/60주년기념관3"><SpaceDetail5></SpaceDetail5></Route>
-        </Router>
-      </div>
-
-      <div class="box-wrap2">
-        <Router>
-          <Link to='/5호관1'><SpaceDetail2></SpaceDetail2></Link>
-          <Link to='/60주년기념관2'><SpaceDetail4></SpaceDetail4></Link>
-          <Link to='/5호관3'><SpaceDetail6></SpaceDetail6></Link>
-          <Route exact path="/5호관1"><SpaceDetail2></SpaceDetail2></Route> 
-          <Route exact path="/60주년 기념관2"><SpaceDetail4></SpaceDetail4></Route> 
-          <Route exact path="/5호관3"><SpaceDetail6></SpaceDetail6></Route>
-        </Router>
-      </div>
-
-      <div className="notice">
-        <hr className="hr1" />
-        <p>공지사항</p>
-        <hr className="hr2" />
-        <div className="gray-box"></div>
-      </div>
+        <div className='grid grid-cols-3 gap-5'>
+          {BUILDINGS.map(({ title, description, value }) => (
+            <div
+              onClick={onClickBuilding(value)}
+              className='px-20 py-10 rounded-lg shadow bg-[#ffffff95] flex flex-col items-center justify-center hover:bg-white cursor-pointer'
+            >
+              <p className='font-bold text-3xl'>{title}</p>
+              <p className='text-gray-600 font-semibold text-lg'>{description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
-    
   );
 }
 
 export default MainApp;
-ReactDOM.render(<Router><MainApp /></Router>, document.getElementById('root'));
+ReactDOM.render(
+  <Router>
+    <MainApp />
+  </Router>,
+  document.getElementById("root"),
+);

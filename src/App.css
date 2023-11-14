@@ -2,7 +2,7 @@
   height: 84px;
   flex-shrink: 0;
   background: #FFF;
-  border-bottom: 1px solid #000; 
+  border-bottom: 1px solid #000;
   }
 
   .container {
@@ -12,23 +12,23 @@
     gap: 2px;
     padding-left: 100px !important;
   }
-  
+
   .container-star{
     width: 18px;
     height: 18px;
     fill: var(--Blue, #149BFC);
   }
-  
+
   .container-logo {
     color: var(--Black, #000);
-    font-family: 'Inter';
+    font-family: 'Pretendard';
     font-size: 20px;
     font-style: normal;
     font-weight: 600;
     line-height: normal;
     text-transform: capitalize;
   }
-  
+
   .navLink{
     display: flex;
   width: 906px;
@@ -37,17 +37,17 @@
   gap: 70px;
   flex-shrink: 0;
   }
-  
+
   .navLink-part{
     color: var(--Black, #000);
-  font-family: Inter;
+  font-family: 'Pretendard';
   font-size: 22px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   text-transform: capitalize;
   }
-  
+
   .Log{
     align-items: center;
     position: absolute;
@@ -56,7 +56,7 @@
 
   .login{
     color: #808080;
-  font-family: Inter;
+  font-family: 'Pretendard';
   font-size: 20px;
   font-style: normal;
   font-weight: 400;
@@ -64,7 +64,7 @@
   text-transform: capitalize;
   margin-right: 10px;
   }
-  
+
   .icon{
     width: 32px;
   height: 32px;

@@ -1,170 +1,216 @@
-import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import './Search.css';
+import React from "react";
+
+import dayjs from "dayjs";
+
+import { BUILDINGS } from "./main";
+import { apis } from "./utils";
+
+const PERSON = ["1", "2", "3", "4", "5", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100~"];
+const STATUS = {
+  RESERVED: "예약완료",
+  IN_USE: "사용중",
+  AVAILABLE: "예약가능",
+};
+
+const COLORS = {
+  RESERVED: "text-red-400",
+  IN_USE: "text-yellow-400",
+  AVAILABLE: "text-primary",
+};
 
 function Search() {
-  const [selectedPeople, setSelectedPeople] = useState(1);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedHour, setSelectedHour] = useState('09');
-  const [selectedMinutes, setSelectedMinutes] = useState('00');
-  const [isCalendarVisible, setIsCalendarVisible] = useState(true);
-  const [isResultVisible, setIsResultVisible] = useState(false);
+  const [data, setData] = React.useState([]);
+  const [selected, setSelected] = React.useState([]);
+  const [options, setOptions] = React.useState({
+    building: "",
+    person: "1",
+    date: dayjs().format("YYYY-MM-DD"),
+    time: dayjs().add(1, "hour").startOf("hour").format("HH:mm"),
+  });
 
-  const handlePeopleChange = (event) => {
-    setSelectedPeople(event.target.value);
+  const searchList = async () => {
+    try {
+      const res = await apis({
+        url: "/reservations",
+        method: "GET",
+      });
+      const filtered = res.filter((item) => {
+        if (item.reservationDate !== options.date) return false;
+        const date = dayjs(`${item.reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
+        const selectedDate = dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm");
+        return date.isAfter(selectedDate);
+      });
+      setData(filtered);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  React.useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const building = urlParams.get("building");
+    if (building) {
+      setOptions({
+        ...options,
+        building: building,
+      });
+    }
+  }, []);
+
+  const onChangeOptions = (e) => {
+    const { name, value } = e.currentTarget;
+    setOptions({
+      ...options,
+      [name]: value,
+    });
   };
 
-  const handleHourChange = (event) => {
-    setSelectedHour(event.target.value);
+  const onChangeSelected = (item) => () => {
+    const index = selected.findIndex((selectedItem) => selectedItem.reservationId === item.reservationId);
+    if (index === -1) {
+      setSelected([...selected, item]);
+    } else {
+      setSelected(selected.filter((_, i) => i !== index));
+    }
   };
 
-  const handleMinutesChange = (event) => {
-    setSelectedMinutes(event.target.value);
+  const reservationPromise = async (item) => {
+    try {
+      const body = {
+        userId: 1,
+        companions: null,
+        roomId: item?.roomId?.roomId,
+        startTime: item?.startTime,
+        endTime: item?.endTime,
+        reservationDate: item?.reservationDate,
+      };
+      const res = await apis({
+        url: "/reservations",
+        method: "POST",
+        body,
+      });
+      return res;
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const handleCalendarMonthChange = (newDate) => {
-    setSelectedDate(newDate);
-  };
-
-  const handleSearchClick = () => {
-    setIsCalendarVisible(false);
-    setIsResultVisible(true);
+  const onReservation = async () => {
+    if (selected.length === 0) return alert("예약할 시설을 선택해주세요.");
+    try {
+      await Promise.all(selected.map((item) => reservationPromise(item)));
+      alert("예약이 완료되었습니다.");
+      await searchList();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
-    <>
-      <div className="Name">
-        <div className="people">
-          <p>예상인원</p>
-        </div>
-
-        <div className="date">
-          <p>날짜</p>
-          <DatePicker
-            selected={selectedDate}
-            onChange={handleDateChange}
-            dateFormat="yyyy-MM-dd"
-          />
-        </div>
-
-        <div className="time">
-          <p>시작시간</p>
-
-          <div className="time-box">
-            <div className='hour'>
-                <select 
-                className="hour-box"
-                value={selectedHour} 
-                onChange={handleHourChange}
-                >
-                    {Array.from({ length: 13 }, (_, index) => {
-                    const hour = index + 9;
-                    const formattedHour = hour < 10 ? `0${hour}` : `${hour}`;
-                    return <option key={formattedHour} value={formattedHour}>{formattedHour}</option>;
-                    })}
-                </select>
-                <div className="unit">시</div>
+    <div className='pt-40 px-20'>
+      <div className='flex flex-col w-full p-10 shadow rounded-md justify-around items-center mb-20'>
+        <div className='flex w-full justify-around items-center'>
+          <div className='flex flex-col relative justify-center items-center'>
+            <p className='font-semibold'>시설명</p>
+            <div className='border border-gray-300 py-2 px-5 rounded'>
+              <select name={"building"} value={options.building} onChange={onChangeOptions}>
+                {BUILDINGS.map((building) => (
+                  <option value={building.value}>{building.title}</option>
+                ))}
+              </select>
             </div>
-
-            <div className='minute'>
-                <select
-                className="minute-box"
-                value={selectedMinutes} 
-                onChange={handleMinutesChange}
-                >
-                    <option value="00">00</option>
-                    <option value="30">30</option>
-                </select>
-                <div className="unit">분</div>
+          </div>
+          <div className='flex flex-col relative justify-center items-center'>
+            <p className='font-semibold'>예상인원</p>
+            <div className='border border-gray-300 py-2 px-5 rounded'>
+              <select name='person' value={options.person} onChange={onChangeOptions}>
+                {PERSON.map((person) => (
+                  <option value={person}>{person}</option>
+                ))}
+              </select>
             </div>
-
+          </div>
+          <div className='flex flex-col relative justify-center items-center'>
+            <p className='font-semibold'>예약일</p>
+            <input
+              type='date'
+              className='border border-gray-300 py-2 px-5 rounded'
+              onChange={onChangeOptions}
+              value={options.date}
+              name='date'
+            />
+          </div>
+          <div className='flex flex-col relative justify-center items-center'>
+            <p className='font-semibold'>예약 시작시간</p>
+            <div className='border border-gray-300 py-2 px-5 rounded flex items-center'>
+              <input type='time' onChange={onChangeOptions} name='time' value={options.time} />
+            </div>
           </div>
         </div>
+        <button className='bg-primary rounded px-5 py-2.5 text-white font-semibold mt-10' onClick={searchList}>
+          검색
+        </button>
       </div>
 
-      <div className="people-box">
-        <select
-          className="unit"
-          value={selectedPeople}
-          onChange={handlePeopleChange}
-        >
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="30">30</option>
-          <option value="40">40</option>
-          <option value="50">50</option>
-          <option value="60">60</option>
-          <option value="70">70</option>
-          <option value="80">80</option>
-          <option value="90">90</option>
-          <option value="100">100~</option>
-        </select>
-        <p className="unit">명</p>
+      <div className='mt-8 flow-root'>
+        <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+          <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+            <table className='min-w-full divide-y divide-gray-300'>
+              <thead>
+                <tr>
+                  <th
+                    scope='col'
+                    className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'
+                  ></th>
+                  <th scope='col' className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'>
+                    이름
+                  </th>
+                  <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
+                    수용인원
+                  </th>
+                  <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
+                    이용시간
+                  </th>
+                  <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
+                    예약
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='divide-y divide-gray-200'>
+                {data?.map((item) => (
+                  <tr key={item.reservationId}>
+                    <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
+                      <input
+                        type='checkbox'
+                        disabled={item.reservationStatus !== "AVAILABLE"}
+                        onClick={onChangeSelected(item)}
+                        checked={selected.includes(item)}
+                      />
+                    </td>
+                    <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
+                      {`${item?.roomId?.facilityId?.facilityName} - ${item?.roomId?.roomName}`}
+                    </td>
+                    <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{item?.roomId?.roomCapacity}</td>
+                    <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{`${item?.startTime} ~ ${item?.endTime}`}</td>
+                    <td className={`whitespace-nowrap px-3 py-4 text-sm font-bold ${COLORS[item?.reservationStatus]}`}>
+                      {STATUS[item?.reservationStatus]}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {data?.length > 0 && (
+          <div className='w-full flex justify-center items-center'>
+            <button className='bg-primary rounded px-5 py-2.5 text-white font-semibold mt-10' onClick={onReservation}>
+              예약하기
+            </button>
+          </div>
+        )}
       </div>
-
-       {/* 거대 달력 */}
-       {isCalendarVisible && (
-        <div className="calendar-container">
-          <Calendar
-            className="calendar"
-            onChange={setSelectedDate}
-            value={selectedDate}
-            onActiveStartDateChange={({ activeStartDate, view }) => {
-              handleCalendarMonthChange(activeStartDate);
-            }}
-          />
-        </div>
-      )}
-
-    {isResultVisible && (
-        <div className='result-box'>
-           
-            <div id="mark">
-                <span className='square'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M0 0H20V20H0V0Z" fill="#D9D9D9"/>
-                    </svg> 예약가능
-                </span>
-                <span className='square'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M0 0H20V20H0V0Z" fill="#3155AE" fill-opacity="0.5"/> 
-                    </svg> 예약중
-                </span>
-                <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M0 0H20V20H0V0Z" fill="#3155AE"/>
-                    </svg> 예약완료
-                </span>
-            </div>
-
-
-            <div className='blue-bar'></div>
-            <div className='name-bar'>
-                <p className='Name'>이름</p>
-                <p className='possible-number'>수용인원</p>
-                <p className='usingtime'>이용시간</p>
-                <p className='reserve'>예약</p>
-            </div>
-        
-        </div>
-    )}
-
-
-      <button className='search' onClick={handleSearchClick}>검색하기</button>
-
-    </>
+    </div>
   );
 }
 
