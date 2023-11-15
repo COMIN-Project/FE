@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-
 import dayjs from "dayjs";
-
 import getReservations from "./getReservations";
 import { BUILDINGS } from "./main";
 import { apis } from "./utils";
@@ -12,7 +10,6 @@ const STATUS = {
   IN_USE: "사용중",
   AVAILABLE: "예약가능",
 };
-
 const COLORS = {
   RESERVED: "text-red-400",
   IN_USE: "text-yellow-400",
@@ -29,62 +26,110 @@ function Search() {
     time: dayjs().add(1, "hour").startOf("hour").format("HH:mm"),
   });
 
+  const generateTimeSlots = (roomData) => {
+    const timeSlots = [];
+    const startOfDay = dayjs().startOf("day").hour(14);
+    const endOfDay = dayjs().endOf("day").hour(16);
+  
+    for (let currentStart = startOfDay; currentStart.isBefore(endOfDay); currentStart = currentStart.add(1, "hour")) {
+      const currentEnd = currentStart.add(1, "hour");
+      
+      const reservation = roomData.find((item) => {
+        const reservationStart = dayjs(`${item.reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
+        const reservationEnd = dayjs(`${item.reservationDate} ${item.endTime}`, "YYYY-MM-DD HH:mm");
+  
+        return reservationStart.isBefore(currentEnd) && reservationEnd.isAfter(currentStart);
+      });
+  
+      timeSlots.push({
+        startTime: currentStart.format("HH:mm"),
+        endTime: currentEnd.format("HH:mm"),
+        reservationStatus: reservation ? reservation.reservationStatus : "AVAILABLE",
+      });
+    }
+    return timeSlots;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const roomsData = await getRooms();
         console.log("Fetched rooms:", roomsData);
-  
+
         // /rooms의 모든 방 정보 가져오기
-        const formattedData = roomsData.map((roomInfo) => ({
-          facilityName: roomInfo?.roomName,
-          roomName: roomInfo?.roomName,
-          roomCapacity: roomInfo?.roomCapacity || "10",
-          // 나머지 필드는 예약 정보에서 가져오는 것으로 유지
-        }));
-  
+        const formattedData = roomsData.flatMap((roomInfo) => {
+          const roomData = data.filter((item) => item.roomId.roomId === roomInfo.roomId);
+          return generateTimeSlots(roomData).map((timeSlot) => ({
+            ...timeSlot,
+            facilityName: roomInfo?.facilityId?.facilityName,
+            roomName: roomInfo?.roomName,
+            roomCapacity: roomInfo?.roomCapacity || "10",
+            // 나머지 필드는 예약 정보에서 가져오는 것으로 유지
+          }));
+        });
+
         console.log("Formatted Data:", formattedData);
         setData(formattedData);
       } catch (error) {
         console.error("Error fetching rooms:", error);
       }
     };
-  
+
     fetchData();
   }, []);
 
   // /rooms의 모든 방 정보 가져오기
-const getRooms = async () => {
-  try {
-    const roomsData = await apis({
-      url: "/rooms",
-      method: "GET",
-    });
-    return roomsData;
-  } catch (error) {
-    console.error("Error fetching rooms:", error);
-    return [];
-  }
-};
+  const getRooms = async () => {
+    try {
+      const roomsData = await apis({
+        url: "/rooms",
+        method: "GET",
+      });
+      return roomsData;
+    } catch (error) {
+      console.error("Error fetching rooms:", error);
+      return [];
+    }
+  };
+  
   const searchList = async () => {
     try {
       const res = await apis({
         url: "/reservations",
         method: "GET",
       });
+  
+      console.log("API Response:", res);
+      console.log("Options:", options);
+  
       const filtered = res.filter((item) => {
-        if (item.reservationDate !== options.date) return false;
-        const date = dayjs(`${item.reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
-        const selectedDate = dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm");
-        return date.isAfter(selectedDate);
+        const reservationDateTime = dayjs(`${item.reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
+  
+        // 해당 시설명, 날짜, 시간에 대한 예약을 찾기
+        const matchingReservation = res.find((other) => (
+          other.roomId.facilityId.facilityName === options.building &&
+          other.reservationDate === options.date &&
+          other.startTime === options.time
+        ));
+        
+        const isReserved = matchingReservation && matchingReservation.reservationStatus === 'RESERVED';
+  
+        return (
+          item.roomId.facilityId.facilityName === options.building &&
+          (isReserved || !reservationDateTime.isBefore(dayjs())) &&
+          reservationDateTime.isBefore(dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm"))
+        );
       });
+  
+      console.log("Filtered Data:", filtered);
+  
       setData(filtered);
     } catch (e) {
       console.error(e);
     }
   };
-
-  React.useEffect(() => {
+  
+  useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const building = urlParams.get("building");
@@ -202,7 +247,10 @@ const getRooms = async () => {
                     className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'
                   ></th>
                   <th scope='col' className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'>
-                    이름
+                    시설명
+                  </th>
+                  <th scope='col' className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'>
+                    강의실명
                   </th>
                   <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
                     수용인원
@@ -225,6 +273,9 @@ const getRooms = async () => {
                         onClick={onChangeSelected(item)}
                         checked={selected.includes(item)}
                       />
+                    </td>
+                    <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
+                      {item?.facilityName}
                     </td>
                     <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
                       {item?.roomName}
