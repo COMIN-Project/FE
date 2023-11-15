@@ -32,29 +32,40 @@ function Search() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const reservationsData = await getReservations();
-        console.log("Fetched reservations:", reservationsData);
-
-        // 필요한 정보만 추출하여 setData
-        const formattedData = reservationsData.map((item) => ({
-          facilityName: item?.selectedPlace, // 수정된 부분
-          roomName: item?.selectedClass, // 수정된 부분
-          roomCapacity: item?.roomCapacity || item?.roomId?.roomCapacity || "10",
-          reservationDate: item.selectedDate, // 수정된 부분
-          startTime: item.startTime,
-          endTime: item.endTime,
-          reservationStatus: item?.reservationStatus || "Unknown Status",
+        const roomsData = await getRooms();
+        console.log("Fetched rooms:", roomsData);
+  
+        // /rooms의 모든 방 정보 가져오기
+        const formattedData = roomsData.map((roomInfo) => ({
+          facilityName: roomInfo?.roomName,
+          roomName: roomInfo?.roomName,
+          roomCapacity: roomInfo?.roomCapacity || "10",
+          // 나머지 필드는 예약 정보에서 가져오는 것으로 유지
         }));
+  
         console.log("Formatted Data:", formattedData);
         setData(formattedData);
       } catch (error) {
-        console.error("Error fetching reservations:", error);
+        console.error("Error fetching rooms:", error);
       }
     };
-
+  
     fetchData();
   }, []);
 
+  // /rooms의 모든 방 정보 가져오기
+const getRooms = async () => {
+  try {
+    const roomsData = await apis({
+      url: "/rooms",
+      method: "GET",
+    });
+    return roomsData;
+  } catch (error) {
+    console.error("Error fetching rooms:", error);
+    return [];
+  }
+};
   const searchList = async () => {
     try {
       const res = await apis({
