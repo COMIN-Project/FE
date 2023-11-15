@@ -1,5 +1,5 @@
 import React from "react";
-// 박지현 바보
+
 import dayjs from "dayjs";
 
 import { BUILDINGS } from "./main";
@@ -30,16 +30,37 @@ function Search() {
 
   const searchList = async () => {
     try {
-      const res = await apis({
+      const roomsRes = await apis({
+        url: "/rooms",
+        method: "GET",
+      });
+
+      const reservationsRes = await apis({
         url: "/reservations",
         method: "GET",
       });
-      const filtered = res.filter((item) => {
-        if (item.reservationDate !== options.date) return false;
-        const date = dayjs(`${item.reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
-        const selectedDate = dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm");
-        return date.isAfter(selectedDate);
+
+      console.log(roomsRes);
+      console.log(reservationsRes);
+
+      const roomData = roomsRes.map((room) => {
+        const matchingReservation = reservationsRes.find(
+          (reservation) => reservation.roomId === room.roomId
+        );
+
+        return {
+          ...room,
+          reservationStatus: matchingReservation ? STATUS.RESERVED : STATUS.AVAILABLE,
+        };
       });
+
+      const filtered = roomData.filter((item) => {
+        const date = dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm");
+        const startTime = dayjs(`${options.date} ${item.startTime}`, "YYYY-MM-DD HH:mm");
+        const endTime = dayjs(`${options.date} ${item.endTime}`, "YYYY-MM-DD HH:mm");
+        return date.isBefore(endTime) && date.isAfter(startTime);
+      });
+
       setData(filtered);
     } catch (e) {
       console.error(e);
@@ -66,10 +87,10 @@ function Search() {
     });
   };
 
-  const onChangeSelected = (item) => () => {
-    const index = selected.findIndex((selectedItem) => selectedItem.reservationId === item.reservationId);
+  const onChangeSelected = (roomId) => () => {
+    const index = selected.findIndex((selectedItem) => selectedItem.roomId === roomId);
     if (index === -1) {
-      setSelected([...selected, item]);
+      setSelected([...selected, { roomId }]);
     } else {
       setSelected(selected.filter((_, i) => i !== index));
     }
@@ -184,8 +205,8 @@ function Search() {
                       <input
                         type='checkbox'
                         disabled={item.reservationStatus !== "AVAILABLE"}
-                        onClick={onChangeSelected(item)}
-                        checked={selected.includes(item)}
+                        onClick={onChangeSelected(item.roomId.roomId)}
+                        checked={selected.some((selectedItem) => selectedItem.roomId === item.roomId.roomId)}
                       />
                     </td>
                     <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
