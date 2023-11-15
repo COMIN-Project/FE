@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 
+import getReservations from "./getReservations";
 import { BUILDINGS } from "./main";
 import { apis } from "./utils";
 
@@ -28,39 +29,44 @@ function Search() {
     time: dayjs().add(1, "hour").startOf("hour").format("HH:mm"),
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const reservationsData = await getReservations();
+        console.log("Fetched reservations:", reservationsData);
+
+        // 필요한 정보만 추출하여 setData
+        const formattedData = reservationsData.map((item) => ({
+          facilityName: item?.selectedPlace, // 수정된 부분
+          roomName: item?.selectedClass, // 수정된 부분
+          roomCapacity: item?.roomCapacity || item?.roomId?.roomCapacity || "10",
+          reservationDate: item.selectedDate, // 수정된 부분
+          startTime: item.startTime,
+          endTime: item.endTime,
+          reservationStatus: item?.reservationStatus || "Unknown Status",
+        }));
+        console.log("Formatted Data:", formattedData);
+        setData(formattedData);
+      } catch (error) {
+        console.error("Error fetching reservations:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const searchList = async () => {
     try {
-      const roomsRes = await apis({
-        url: "/rooms",
-        method: "GET",
-      });
-
-      const reservationsRes = await apis({
+      const res = await apis({
         url: "/reservations",
         method: "GET",
       });
-
-      console.log(roomsRes);
-      console.log(reservationsRes);
-
-      const roomData = roomsRes.map((room) => {
-        const matchingReservation = reservationsRes.find(
-          (reservation) => reservation.roomId === room.roomId
-        );
-
-        return {
-          ...room,
-          reservationStatus: matchingReservation ? STATUS.RESERVED : STATUS.AVAILABLE,
-        };
+      const filtered = res.filter((item) => {
+        if (item.reservationDate !== options.date) return false;
+        const date = dayjs(`${item.reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
+        const selectedDate = dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm");
+        return date.isAfter(selectedDate);
       });
-
-      const filtered = roomData.filter((item) => {
-        const date = dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm");
-        const startTime = dayjs(`${options.date} ${item.startTime}`, "YYYY-MM-DD HH:mm");
-        const endTime = dayjs(`${options.date} ${item.endTime}`, "YYYY-MM-DD HH:mm");
-        return date.isBefore(endTime) && date.isAfter(startTime);
-      });
-
       setData(filtered);
     } catch (e) {
       console.error(e);
@@ -87,10 +93,10 @@ function Search() {
     });
   };
 
-  const onChangeSelected = (roomId) => () => {
-    const index = selected.findIndex((selectedItem) => selectedItem.roomId === roomId);
+  const onChangeSelected = (item) => () => {
+    const index = selected.findIndex((selectedItem) => selectedItem.reservationId === item.reservationId);
     if (index === -1) {
-      setSelected([...selected, { roomId }]);
+      setSelected([...selected, item]);
     } else {
       setSelected(selected.filter((_, i) => i !== index));
     }
@@ -205,14 +211,20 @@ function Search() {
                       <input
                         type='checkbox'
                         disabled={item.reservationStatus !== "AVAILABLE"}
-                        onClick={onChangeSelected(item.roomId.roomId)}
-                        checked={selected.some((selectedItem) => selectedItem.roomId === item.roomId.roomId)}
+                        onClick={onChangeSelected(item)}
+                        checked={selected.includes(item)}
                       />
                     </td>
                     <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
-                      {`${item?.roomId?.facilityId?.facilityName} - ${item?.roomId?.roomName}`}
+                      {item?.roomName}
                     </td>
-                    <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{item?.roomId?.roomCapacity}</td>
+                    {/* <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
+                      {item?.reservationDate}
+                    </td> */}{" "}
+                    <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
+                      {/* Room Capacity 표시 */}
+                      {item?.roomCapacity}
+                    </td>
                     <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{`${item?.startTime} ~ ${item?.endTime}`}</td>
                     <td className={`whitespace-nowrap px-3 py-4 text-sm font-bold ${COLORS[item?.reservationStatus]}`}>
                       {STATUS[item?.reservationStatus]}

@@ -57,7 +57,7 @@
     .input-box {
         position : absolute;
         left : 171px;
-        top : 200px;
+        top : 400px;
         margin : 0;
     }
 
@@ -121,30 +121,7 @@
         text-align: left;
     }
 
-    .check {
-        width: 150px;
-        height: 50px;
-        position: absolute;
-        left : 1129px;
-        top : 946px;
-        border-radius: 5px;
-        overflow: hidden;
-        border: 1px solid;
-        z-index: inherit;
-
-        background-color: #6187D280;
-        opacity: 50%;
-        color: #FFFFFF;
-        padding: 10px 20px;
-        border: none;
-
-        font-size: 25px;
-        font-family: 'Pretendard';
-        font-weight: 400;
-        text-transform: capitalize;
-        word-wrap: break-word;
-        text-align: center;
-    }
+   
 
     .box1 select:focus,
     .box2 select:focus,
