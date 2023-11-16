@@ -64,6 +64,7 @@ const Navbar = ({ onLoginClick }) => {
         </Link>
       </div>
 
+<<<<<<< HEAD
       <div className='flex items-center' style={{ whiteSpace: 'nowrap' }}>
   <button className='w-20 mr-5' onClick={handleLoginClick}>
     <a>{isLoggedIn ? `로그아웃 (${userID})` : "로그인"}</a>
@@ -72,6 +73,16 @@ const Navbar = ({ onLoginClick }) => {
     <circle cx='16' cy='16' r='16' fill='#D9D9D9' />
   </svg>
 </div>
+=======
+      <div className='flex'>
+        <button className='w-20 mr-2' onClick={handleLoginClick}>
+          <a>{isLoggedIn ? `로그아웃 (${userID})` : "로그인"}</a>
+        </button>
+        <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32' fill='none'>
+          <circle cx='16' cy='16' r='16' fill='#D9D9D9' />
+        </svg>
+      </div>
+>>>>>>> 9ac89590aea5ec5198d1b48f5edcd80f2c507275
     </nav>
   );
 };
