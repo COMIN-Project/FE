@@ -1,7 +1,8 @@
-import React from "react";
-//박지현바보
+import React, { useEffect, useState } from "react";
+
 import dayjs from "dayjs";
 
+import getReservations from "./getReservations";
 import { BUILDINGS } from "./main";
 import { apis } from "./utils";
 
@@ -11,7 +12,6 @@ const STATUS = {
   IN_USE: "사용중",
   AVAILABLE: "예약가능",
 };
-
 const COLORS = {
   RESERVED: "text-red-400",
   IN_USE: "text-yellow-400",
@@ -28,25 +28,106 @@ function Search() {
     time: dayjs().add(1, "hour").startOf("hour").format("HH:mm"),
   });
 
+  const generateTimeSlots = (roomData, selectedDate) => {
+    const timeSlots = [];
+    const currentDate = dayjs(selectedDate);
+
+    for (let i = 0; i < 2; i++) {
+      const currentStart = currentDate.clone().hour(14).add(i, "hour");
+      const currentEnd = currentStart.clone().add(1, "hour");
+
+      const currentReservation = roomData.find((item) => {
+        const reservationDate = item.reservationDate || selectedDate;
+        const reservationStart = dayjs(`${reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
+        const reservationEnd = dayjs(`${reservationDate} ${item.endTime}`, "YYYY-MM-DD HH:mm");
+
+        return reservationStart.isBefore(currentEnd) && reservationEnd.isAfter(currentStart);
+      });
+
+      if (currentStart.hour() < 16 && !timeSlots.some((slot) => slot.startTime === currentStart.format("HH:mm"))) {
+        timeSlots.push({
+          startTime: currentStart.format("HH:mm"),
+          endTime: currentEnd.format("HH:mm"),
+          reservationStatus: currentReservation ? currentReservation.reservationStatus : "AVAILABLE",
+          reservationDate: currentReservation ? currentReservation.reservationDate : selectedDate,
+        });
+      }
+    }
+
+    return timeSlots;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setData([]);
+
+        const roomsData = await getRooms();
+        console.log("Fetched rooms:", roomsData);
+
+        const formattedData = roomsData.flatMap((roomInfo) => {
+          const roomData = data.filter((item) => item.roomId.roomId === roomInfo.roomId);
+          return generateTimeSlots(roomData, options.date).map((timeSlot) => ({
+            ...timeSlot,
+            facilityName: roomInfo?.facilityId?.facilityName,
+            roomName: roomInfo?.roomName,
+            roomCapacity: roomInfo?.roomCapacity || "10",
+          }));
+        });
+
+        console.log("Formatted Data:", formattedData);
+        setData(formattedData);
+      } catch (error) {
+        console.error("Error fetching rooms:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const getRooms = async () => {
+    try {
+      const roomsData = await apis({
+        url: "/rooms",
+        method: "GET",
+      });
+      return roomsData;
+    } catch (error) {
+      console.error("Error fetching rooms:", error);
+      return [];
+    }
+  };
+
   const searchList = async () => {
     try {
       const res = await apis({
         url: "/reservations",
         method: "GET",
       });
+
+      console.log("API 응답:", res);
+      console.log("옵션:", options);
+
       const filtered = res.filter((item) => {
-        if (item.reservationDate !== options.date) return false;
-        const date = dayjs(`${item.reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
-        const selectedDate = dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm");
-        return date.isAfter(selectedDate);
+        const reservationDateTime = dayjs(`${item.reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
+
+        const isFacilityMatched = item.roomId.facilityId.facilityName === options.building;
+        const isCapacityMatched = parseInt(item.roomId.roomCapacity) >= parseInt(options.person);
+        const isDateMatched = item.reservationDate === options.date;
+        const isTimeMatched = reservationDateTime.isAfter(dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm"));
+
+        return isFacilityMatched && isCapacityMatched && isDateMatched && isTimeMatched;
       });
+
+      console.log("필터링된 데이터:", filtered);
+
       setData(filtered);
     } catch (e) {
       console.error(e);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const building = urlParams.get("building");
@@ -60,9 +141,12 @@ function Search() {
 
   const onChangeOptions = (e) => {
     const { name, value } = e.currentTarget;
+
+    const newDate = name === "date" && !value ? dayjs().format("YYYY-MM-DD") : value;
+
     setOptions({
       ...options,
-      [name]: value,
+      [name]: newDate,
     });
   };
 
@@ -85,11 +169,20 @@ function Search() {
         endTime: item?.endTime,
         reservationDate: item?.reservationDate,
       };
+
+      console.log("Request Body:", body);
+
       const res = await apis({
         url: "/reservations",
         method: "POST",
-        body,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
       });
+
+      console.log("Response:", res);
+
       return res;
     } catch (e) {
       console.error(e);
@@ -98,8 +191,34 @@ function Search() {
 
   const onReservation = async () => {
     if (selected.length === 0) return alert("예약할 시설을 선택해주세요.");
+  
     try {
-      await Promise.all(selected.map((item) => reservationPromise(item)));
+      await Promise.all(
+        selected.map(async (item) => {
+          const body = {
+            userId: 1,
+            companions: null,
+            roomId: item?.roomId?.roomId,
+            startTime: item?.startTime,
+            endTime: item?.endTime,
+            reservationDate: item?.reservationDate,
+          };
+  
+          console.log("Request Body:", body);
+  
+          const res = await apis({
+            url: "/reservations",
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+          });
+  
+          console.log("Response:", res);
+        })
+      );
+  
       alert("예약이 완료되었습니다.");
       await searchList();
     } catch (e) {
@@ -164,10 +283,16 @@ function Search() {
                     className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'
                   ></th>
                   <th scope='col' className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'>
-                    이름
+                    시설명
+                  </th>
+                  <th scope='col' className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'>
+                    강의실명
                   </th>
                   <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
                     수용인원
+                  </th>
+                  <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
+                    예약일
                   </th>
                   <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
                     이용시간
@@ -189,9 +314,20 @@ function Search() {
                       />
                     </td>
                     <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
-                      {`${item?.roomId?.facilityId?.facilityName} - ${item?.roomId?.roomName}`}
+                      {item?.facilityName}
                     </td>
-                    <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{item?.roomId?.roomCapacity}</td>
+                    <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
+                      {item?.roomName}
+                    </td>
+                    <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
+                      {/* Room Capacity 표시 */}
+                      {item?.roomCapacity}
+                    </td>
+                    {
+                      <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
+                        {item?.reservationDate}
+                      </td>
+                    }{" "}
                     <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{`${item?.startTime} ~ ${item?.endTime}`}</td>
                     <td className={`whitespace-nowrap px-3 py-4 text-sm font-bold ${COLORS[item?.reservationStatus]}`}>
                       {STATUS[item?.reservationStatus]}

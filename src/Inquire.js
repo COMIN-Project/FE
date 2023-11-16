@@ -1,302 +1,249 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { ko } from "date-fns/locale";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import "./Inquire.css";
+import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import getReservations from "./getReservations";
+import { BUILDINGS } from "./main";
+import { apis } from "./utils";
+import { useHistory } from "react-router-dom";
 
-const BlockItem = ({
-  selectedPlace,
-  selectedClass,
-  selectedDate,
-  startTime,
-  endTime,
-  buttonText,
-}) => {
-  const history = useHistory();
-
-  const onSelectPlaceAndClass = () => {
-    // 함수 매개변수로 전달된 selectedPlace와 selectedClass를 직접 사용할 수 있습니다.
-    if (selectedPlace && selectedClass) {
-      // 선택된 장소와 강의실이 존재할 때만 페이지 이동 및 데이터 전달
-      history.push({
-        pathname: "/suggest",
-        state: {
-          selectedPlace: selectedPlace,
-          selectedClass: selectedClass,
-        },
-      });
-    } else {
-      // 선택된 장소나 강의실이 없을 때 예외 처리 (선택 필요 메시지 등을 표시할 수 있음)
-      console.log("장소와 강의실을 선택하세요.");
-    }
-  };
-
-  // startTime과 endTime을 'startTime' - 'endTime' 형식으로 조합
-  const formattedTime = `${startTime} - ${endTime}`;
-
-  return (
-    <li className="block">
-      <span className="block-typoI">{selectedPlace}</span>
-      <span className="block-typoI">{selectedClass}</span>
-      <span className="block-typoI">{selectedDate}</span>
-      <span className="block-typoI">{formattedTime}</span>
-      <span className="frame7I">
-        <a className="frame7-typo" onClick={onSelectPlaceAndClass}>
-          건의하기
-        </a>
-      </span>
-    </li>
-  );
+const PERSON = ["1", "2", "3", "4", "5", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100~"];
+const STATUS = {
+  RESERVED: "예약완료",
+  IN_USE: "사용중",
+  AVAILABLE: "예약가능",
 };
 
-function getFacilityData(nowFacility) {
-  if (nowFacility === "나의 이용내역") {
-    return [
-      {
-        selectedPlace: "본관",
-        selectedClass: "중강당",
-        selectedDate: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-    ];
-  } else if (nowFacility === "이용예정 목록") {
-    return [
-      {
-        selectedPlace: "5호관",
-        selectedClass: "5동 104A",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-    ];
-  } else if (nowFacility === "문의사항 확인") {
-    return [
-      {
-        selectedPlace: "나빌레관",
-        selectedClass: "가무연습실",
-        capacity: "20",
-        timeColors: "12:30 ~ 14:30",
-        buttonText: "건의하기",
-      },
-    ];
-  }
-}
+const COLORS = {
+  RESERVED: "text-red-400",
+  IN_USE: "text-yellow-400",
+  AVAILABLE: "text-primary",
+};
 
-const Inquire = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date("2023-09-18"));
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [nowFacility, setNowFacility] = useState("나의 이용내역");
-  const facilityData = getFacilityData(nowFacility);
-
-  const [reservations, setReservations] = useState([]); // 예약 데이터를 저장할 상태 추가
+function Inquire() {
+  const [data, setData] = React.useState([]);
+  const [selected, setSelected] = React.useState([]);
+  const [options, setOptions] = React.useState({
+    building: "",
+    person: "1",
+    date: dayjs().format("YYYY-MM-DD"),
+    time: dayjs().add(1, "hour").startOf("hour").format("HH:mm"),
+  });
 
   const history = useHistory();
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const reservationsData = await getReservations();
+  //       console.log("Fetched reservations:", reservationsData);
+  //       setData(reservationsData);
+  //     } catch (error) {
+  //       console.error("Error fetching reservations:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+  
   useEffect(() => {
-    // 컴포넌트가 마운트된 후에 GET 요청을 보내고 데이터를 받아옴
     const fetchData = async () => {
       try {
         const reservationsData = await getReservations();
-        setReservations(reservationsData);
+        console.log("Fetched reservations:", reservationsData);
+
+        // 필요한 정보만 추출하여 setData
+        const formattedData = reservationsData.map((item) => ({
+          facilityName: item?.selectedPlace, // 수정된 부분
+          roomName: item?.selectedClass, // 수정된 부분
+          reservationDate: item.selectedDate, // 수정된 부분
+          startTime: item.startTime,
+          endTime: item.endTime,
+        }));
+
+        setData(formattedData);
       } catch (error) {
         console.error("Error fetching reservations:", error);
       }
     };
 
     fetchData();
-  }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 함
+  }, []);
 
-  const [showDatePicker1, setShowDatePicker1] = useState(false);
-  const [showDatePicker2, setShowDatePicker2] = useState(false);
-  const [selectedDate1, setSelectedDate1] = useState(new Date("2023-09-18"));
-  const [selectedDate2, setSelectedDate2] = useState(new Date("2023-09-18"));
-
-  const handleItemClick = (selectedFacility) => {
-    setNowFacility(selectedFacility);
+  const searchList = async () => {
+    try {
+      const res = await apis({
+        url: "/reservations",
+        method: "GET",
+      });
+      const filtered = res.filter((item) => {
+        if (item.reservationDate !== options.date) return false;
+        const date = dayjs(`${item.reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
+        const selectedDate = dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm");
+        return date.isAfter(selectedDate);
+      });
+      setData(filtered);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const handleCalendarClick = () => {
-    setShowDatePicker(!showDatePicker);
+  React.useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const building = urlParams.get("building");
+    if (building) {
+      setOptions({
+        ...options,
+        building: building,
+      });
+    }
+  }, []);
+
+  const onChangeOptions = (e) => {
+    const { name, value } = e.currentTarget;
+    setOptions({
+      ...options,
+      [name]: value,
+    });
   };
 
-  const selectedStyle = {
-    color: "rgba(97, 135, 210, 0.70)",
+  const onSelectPlaceAndClass = (facilityName, roomName) => {
+    if (facilityName && roomName) {
+      history.push({
+        pathname: "/suggest",
+        state: {
+          selectedPlace: facilityName,
+          selectedClass: roomName,
+        },
+      });
+    } else {
+      console.log("장소와 강의실을 선택하세요.");
+    }
+  };
+
+  const onChangeSelected = (item) => () => {
+    const index = selected.findIndex((selectedItem) => selectedItem.reservationId === item.reservationId);
+    if (index === -1) {
+      setSelected([...selected, item]);
+    } else {
+      setSelected(selected.filter((_, i) => i !== index));
+    }
+  };
+
+  const reservationPromise = async (item) => {
+    try {
+      const body = {
+        userId: 1,
+        companions: null,
+        roomId: item?.roomId?.roomId,
+        startTime: item?.startTime,
+        endTime: item?.endTime,
+        reservationDate: item?.reservationDate,
+      };
+      const res = await apis({
+        url: "/reservations",
+        method: "POST",
+        body,
+      });
+      return res;
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const onReservation = async () => {
+    if (selected.length === 0) return alert("예약할 시설을 선택해주세요.");
+    try {
+      await Promise.all(selected.map((item) => reservationPromise(item)));
+      alert("예약이 완료되었습니다.");
+      await searchList();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
-    <>
-      <div className="frame34">
-        <div id="Facility">
-          <h2 className="facility">{nowFacility}</h2>
-        </div>
+    <div>
+      <div>
+        <div className='mt-8 flow-root'>{/* 첫 번째 내용 */}</div>
+        <div className='mt-8 flow-root'>{/* 두 번째 내용 */}</div>{" "}
+        <div className='mt-8 flow-root'>{/* 두 번째 내용 */}</div>
+      </div>
 
-        <div className="facility-right">
-          {nowFacility === "나의 이용내역" && (
-            <div>
-              <span
-                className="frame3I"
-                onClick={() => setShowDatePicker1(!showDatePicker1)}
-              >
-                <p className="frame3I-typo">
-                  {selectedDate1.toISOString().split("T")[0]}
-                </p>
-              </span>
-              <div className="Line-23"></div>
-              <span
-                className="frame3I"
-                onClick={() => setShowDatePicker2(!showDatePicker2)}
-              >
-                <p className="frame3I-typo">
-                  {selectedDate2.toISOString().split("T")[0]}
-                </p>
-              </span>
-              <div className="absolutePositionI-1">
-                {showDatePicker1 && (
-                  <DatePicker
-                    selected={selectedDate1}
-                    onChange={(date) => {
-                      setSelectedDate1(date);
-                      setShowDatePicker1(false);
-                      setShowDatePicker(false);
-                    }}
-                    inline
-                    locale={ko}
-                    style={{ backgroundColor: "rgba(255, 255, 255, 1)" }}
-                  />
-                )}
-              </div>
-              <div className="absolutePositionI-2">
-                {showDatePicker2 && (
-                  <DatePicker
-                    selected={selectedDate2}
-                    onChange={(date) => {
-                      setSelectedDate2(date);
-                      setShowDatePicker2(false);
-                      setShowDatePicker(false);
-                    }}
-                    inline
-                    locale={ko}
-                    style={{ backgroundColor: "rgba(255, 255, 255, 1)" }}
-                  />
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {nowFacility === "이용예정 목록" && (
-          <div className="secondI">
-            <span
-              className="frame3I"
-              onClick={() => setShowDatePicker1(!showDatePicker1)}
-            >
-              <p className="frame3I-typo">
-                {selectedDate1.toISOString().split("T")[0]}
-              </p>
-            </span>
-            <div className="Line-23"></div>
-            <span
-              className="frame3I"
-              onClick={() => setShowDatePicker2(!showDatePicker2)}
-            >
-              <p className="frame3I-typo">
-                {selectedDate2.toISOString().split("T")[0]}
-              </p>
-            </span>
-            <div className="absolutePositionI-1">
-              {showDatePicker1 && (
-                <DatePicker
-                  selected={selectedDate1}
-                  onChange={(date) => {
-                    setSelectedDate1(date);
-                    setShowDatePicker1(false);
-                    setShowDatePicker(false);
-                  }}
-                  inline
-                  locale={ko}
-                  style={{ backgroundColor: "rgba(255, 255, 255, 1)" }}
-                />
-              )}
-            </div>
-            <div className="absolutePositionI-2">
-              {showDatePicker2 && (
-                <DatePicker
-                  selected={selectedDate2}
-                  onChange={(date) => {
-                    setSelectedDate2(date);
-                    setShowDatePicker2(false);
-                    setShowDatePicker(false);
-                  }}
-                  inline
-                  locale={ko}
-                  style={{ backgroundColor: "rgba(255, 255, 255, 1)" }}
-                />
-              )}
-            </div>
+      <div className='mt-8 flow-root ml-40'>
+        <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+          <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+            <h3>나의 이용내역</h3>
+            <br></br>
+            <table className='min-w-full divide-y divide-gray-300'>
+              <thead>
+                <tr>
+                  <th
+                    scope='col'
+                    className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'
+                    style={{ fontSize: "20px" }}
+                  >
+                    시설명
+                  </th>
+                  <th
+                    scope='col'
+                    className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'
+                    style={{ fontSize: "20px" }}
+                  >
+                    강의실명
+                  </th>
+                  <th
+                    scope='col'
+                    className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'
+                    style={{ fontSize: "20px" }}
+                  >
+                    이용날짜
+                  </th>
+                  <th
+                    scope='col'
+                    className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'
+                    style={{ fontSize: "20px" }}
+                  >
+                    이용시간
+                  </th>
+                  <th
+                    scope='col'
+                    className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'
+                    style={{ fontSize: "20px" }}
+                  >
+                    건의
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='divide-y divide-gray-200'>
+                {data?.map((item, index) => (
+                  <tr key={index}>
+                    <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
+                      {item?.facilityName}
+                    </td>
+                    <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
+                      {item?.roomName}
+                    </td>
+                    <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
+                      {item?.reservationDate}
+                    </td>
+                    <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{`${item?.startTime} ~ ${item?.endTime}`}</td>
+                    <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
+                      <button
+                        className='bg-primary rounded px-1 py-1 text-white font-semibold mt-10'
+                        onClick={() => onSelectPlaceAndClass(item.facilityName, item.roomName)}
+                      >
+                        건의하기
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
-      </div>
-
-      <div id="reList_right" className="reList_right">
-        <div id="frame5">
-          <ul className="frame5">
-            <li className="frame6">
-              <span className="frame6-typo">시설명</span>
-              <span className="frame6-typo">강의실명</span>
-              <span className="frame6-typo">이용날짜</span>
-              <span className="frame6-typo">이용시간</span>
-              <span className="frame6-typo">예약</span>
-            </li>
-            {reservations.map((item, index) => (
-              <BlockItem
-                key={index}
-                selectedPlace={item.selectedPlace}
-                selectedClass={item.selectedClass}
-                selectedDate={item.selectedDate}
-                startTime={item.startTime}
-                endTime={item.endTime}
-                buttonText={item.buttonText}
-              />
-            ))}
-          </ul>
         </div>
       </div>
-
-      <div id="reListI">
-        <ul className="List">
-          <li className="list-up">
-            <p className="list-typo">시설예약</p>
-          </li>
-          <li
-            className="list-typo2"
-            onClick={() => handleItemClick("나의 이용내역")}
-            style={nowFacility === "나의 이용내역" ? selectedStyle : {}}
-          >
-            나의 이용내역
-          </li>
-          <li
-            className="list-typo2"
-            onClick={() => handleItemClick("이용예정 목록")}
-            style={nowFacility === "이용예정 목록" ? selectedStyle : {}}
-          >
-            이용예정 목록
-          </li>
-          <li
-            className="list-typo2"
-            onClick={() => handleItemClick("문의사항 확인")}
-            style={nowFacility === "문의사항 확인" ? selectedStyle : {}}
-          >
-            문의사항 확인
-          </li>
-        </ul>
-      </div>
-    </>
+    </div>
   );
-};
+}
 
 export default Inquire;
