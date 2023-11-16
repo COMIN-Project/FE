@@ -2,6 +2,14 @@ import React from "react";
 
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
+import { createGlobalStyle } from 'styled-components';
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    width: 75%;
+    margin: auto;
+  }
+`;
 
 export const BUILDINGS = [
   {
@@ -68,6 +76,7 @@ function MainApp() {
 export default MainApp;
 ReactDOM.render(
   <Router>
+     <GlobalStyle />
     <MainApp />
   </Router>,
   document.getElementById("root"),

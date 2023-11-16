@@ -1,6 +1,6 @@
 const getReservations = async () => {
   try {
-    const response = await fetch("http://13.125.190.19:8080/api/reservations"); // 서버의 실제 엔드포인트를 사용해야 합니다.
+    const response = await fetch("http://13.125.190.19:8080/api/reservations"); 
 
     if (!response.ok) {
       throw new Error("Failed to fetch reservations");
