@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-
 import dayjs from "dayjs";
-
 import getReservations from "./getReservations";
 import { BUILDINGS } from "./main";
 import { apis } from "./utils";
@@ -57,34 +55,37 @@ function Search() {
     return timeSlots;
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
+    useEffect(() => {
+      const fetchData = async () => {
       try {
-        setData([]);
+      setData([]); // data 상태 초기화
+      
+          const roomsData = await getRooms();
+          console.log("Fetched rooms:", roomsData);
+      
+          // /rooms의 모든 방 정보 가져오기
+          const formattedData = roomsData.flatMap((roomInfo) => {
+            const roomData = data.filter((item) => item.roomId.roomId === roomInfo.roomId);
+            return generateTimeSlots(roomData, options.date).map((timeSlot) => ({
+              ...timeSlot,
+              facilityName: roomInfo?.facilityId?.facilityName,
+              roomName: roomInfo?.roomName,
+              roomCapacity: roomInfo?.roomCapacity || "10",
+              // 나머지 필드는 예약 정보에서 가져오는 것으로 유지
+            }));
+          });
+      
+          console.log("Formatted Data:", formattedData);
+          setData(formattedData);
+        } catch (error) {
+          console.error("Error fetching rooms:", error);
+        }
+      };
+      
+      fetchData();
+      }, []);
 
-        const roomsData = await getRooms();
-        console.log("Fetched rooms:", roomsData);
-
-        const formattedData = roomsData.flatMap((roomInfo) => {
-          const roomData = data.filter((item) => item.roomId.roomId === roomInfo.roomId);
-          return generateTimeSlots(roomData, options.date).map((timeSlot) => ({
-            ...timeSlot,
-            facilityName: roomInfo?.facilityId?.facilityName,
-            roomName: roomInfo?.roomName,
-            roomCapacity: roomInfo?.roomCapacity || "10",
-          }));
-        });
-
-        console.log("Formatted Data:", formattedData);
-        setData(formattedData);
-      } catch (error) {
-        console.error("Error fetching rooms:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
+  // /rooms의 모든 방 정보 가져오기
   const getRooms = async () => {
     try {
       const roomsData = await apis({
@@ -97,36 +98,68 @@ function Search() {
       return [];
     }
   };
+  
+ // facilityName과 building 값의 매핑
+const buildingMap = {
+  main: "본관",
+  5: "5호관",
+  60: "60주년 기념관",
+  hiTech: "하이테크",
+  naville: "나빌레관",
+  6: "6호관",
+};
 
-  const searchList = async () => {
-    try {
-      const res = await apis({
-        url: "/reservations",
-        method: "GET",
-      });
+// building 값을 facilityName으로 변환하는 함수
+const convertBuildingToFacilityName = (building) => {
+  return buildingMap[building] || building;
+};
 
-      console.log("API 응답:", res);
-      console.log("옵션:", options);
+// searchList 함수 내에서 building 값을 facilityName으로 변환하여 사용
+const searchList = async (selectedOptions) => {
+  try {
+    const reservations = await apis({
+      url: "/reservations",
+      method: "GET",
+    });
 
-      const filtered = res.filter((item) => {
-        const reservationDateTime = dayjs(`${item.reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
+    const roomsData = await getRooms(); // rooms 정보 가져오기
 
-        const isFacilityMatched = item.roomId.facilityId.facilityName === options.building;
-        const isCapacityMatched = parseInt(item.roomId.roomCapacity) >= parseInt(options.person);
-        const isDateMatched = item.reservationDate === options.date;
-        const isTimeMatched = reservationDateTime.isAfter(dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm"));
+    console.log("Reservations API Response:", reservations);
+    console.log("Rooms API Response:", roomsData);
+    
+    const facilityName = convertBuildingToFacilityName(selectedOptions.building);
 
-        return isFacilityMatched && isCapacityMatched && isDateMatched && isTimeMatched;
-      });
+    // Filter rooms based on selected facilityName and other conditions
+    const filteredRooms = roomsData.filter((room) => {
+      const isFacilityMatched = room.facilityId.facilityName === facilityName;
+      const isCapacityMatched = parseInt(room.roomCapacity) >= parseInt(selectedOptions.person);
+      // Add other filters here, like date and time
+      
+      return isFacilityMatched && isCapacityMatched; // Add other conditions here
+    });
 
-      console.log("필터링된 데이터:", filtered);
+    // Combine reservation data with room data
+    const dataWithDetails = filteredRooms.map((room) => {
+      const reservationDetails = reservations.find((reservation) => reservation.roomId.roomId === room.roomId);
+      return {
+        ...reservationDetails,
+        facilityName: room.facilityId.facilityName,
+        roomName: room.roomName,
+        roomCapacity: room.roomCapacity || "10",
+      };
+    });
 
-      setData(filtered);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+    console.log("Filtered Rooms:", dataWithDetails);
 
+    setData(dataWithDetails);
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+
+
+  
   useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -230,26 +263,28 @@ function Search() {
     <div className='pt-40 px-20'>
       <div className='flex flex-col w-full p-10 shadow rounded-md justify-around items-center mb-20'>
         <div className='flex w-full justify-around items-center'>
-          <div className='flex flex-col relative justify-center items-center'>
-            <p className='font-semibold'>시설명</p>
-            <div className='border border-gray-300 py-2 px-5 rounded'>
-              <select name={"building"} value={options.building} onChange={onChangeOptions}>
-                {BUILDINGS.map((building) => (
-                  <option value={building.value}>{building.title}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className='flex flex-col relative justify-center items-center'>
-            <p className='font-semibold'>예상인원</p>
-            <div className='border border-gray-300 py-2 px-5 rounded'>
-              <select name='person' value={options.person} onChange={onChangeOptions}>
-                {PERSON.map((person) => (
-                  <option value={person}>{person}</option>
-                ))}
-              </select>
-            </div>
-          </div>
+        <div className='flex flex-col relative justify-center items-center'>
+  <label htmlFor="building" className='font-semibold'>시설명</label>
+  <div className='border border-gray-300 py-2 px-5 rounded'>
+    <select id="building" name="building" value={options.building} onChange={onChangeOptions}>
+      {BUILDINGS.map((building) => (
+        <option key={building.value} value={building.value}>{building.title}</option>
+      ))}
+    </select>
+  </div>
+</div>
+
+<div className='flex flex-col relative justify-center items-center'>
+  <label htmlFor="person" className='font-semibold'>예상인원</label>
+  <div className='border border-gray-300 py-2 px-5 rounded'>
+    <select id="person" name="person" value={options.person} onChange={onChangeOptions}>
+      {PERSON.map((person) => (
+        <option key={person} value={person}>{person}</option>
+      ))}
+    </select>
+  </div>
+</div>
+
           <div className='flex flex-col relative justify-center items-center'>
             <p className='font-semibold'>예약일</p>
             <input
@@ -267,9 +302,10 @@ function Search() {
             </div>
           </div>
         </div>
-        <button className='bg-primary rounded px-5 py-2.5 text-white font-semibold mt-10' onClick={searchList}>
+        <button className='bg-primary rounded px-5 py-2.5 text-white font-semibold mt-10' onClick={() => searchList(options)}>
           검색
         </button>
+
       </div>
 
       <div className='mt-8 flow-root'>
@@ -290,9 +326,6 @@ function Search() {
                   </th>
                   <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
                     수용인원
-                  </th>
-                  <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
-                    예약일
                   </th>
                   <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
                     이용시간
@@ -320,14 +353,8 @@ function Search() {
                       {item?.roomName}
                     </td>
                     <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
-                      {/* Room Capacity 표시 */}
                       {item?.roomCapacity}
                     </td>
-                    {
-                      <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
-                        {item?.reservationDate}
-                      </td>
-                    }{" "}
                     <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{`${item?.startTime} ~ ${item?.endTime}`}</td>
                     <td className={`whitespace-nowrap px-3 py-4 text-sm font-bold ${COLORS[item?.reservationStatus]}`}>
                       {STATUS[item?.reservationStatus]}
