@@ -2,7 +2,6 @@ import React from "react";
 
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
-<<<<<<< HEAD
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
@@ -11,8 +10,6 @@ const GlobalStyle = createGlobalStyle`
     margin: auto;
   }
 `;
-=======
->>>>>>> 9ac89590aea5ec5198d1b48f5edcd80f2c507275
 
 export const BUILDINGS = [
   {
@@ -79,15 +76,8 @@ function MainApp() {
 export default MainApp;
 ReactDOM.render(
   <Router>
-<<<<<<< HEAD
      <GlobalStyle />
     <MainApp />
   </Router>,
   document.getElementById("root"),
 );
-=======
-    <MainApp />
-  </Router>,
-  document.getElementById("root"),
-);
->>>>>>> 9ac89590aea5ec5198d1b48f5edcd80f2c507275

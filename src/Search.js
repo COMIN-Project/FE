@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-<<<<<<< HEAD
-
 import dayjs from "dayjs";
-
-=======
-import dayjs from "dayjs";
->>>>>>> 9ac89590aea5ec5198d1b48f5edcd80f2c507275
 import getReservations from "./getReservations";
 import { BUILDINGS } from "./main";
 import { apis } from "./utils";
@@ -61,36 +55,6 @@ function Search() {
     return timeSlots;
   };
 
-<<<<<<< HEAD
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setData([]);
-
-        const roomsData = await getRooms();
-        console.log("Fetched rooms:", roomsData);
-
-        const formattedData = roomsData.flatMap((roomInfo) => {
-          const roomData = data.filter((item) => item.roomId.roomId === roomInfo.roomId);
-          return generateTimeSlots(roomData, options.date).map((timeSlot) => ({
-            ...timeSlot,
-            facilityName: roomInfo?.facilityId?.facilityName,
-            roomName: roomInfo?.roomName,
-            roomCapacity: roomInfo?.roomCapacity || "10",
-          }));
-        });
-
-        console.log("Formatted Data:", formattedData);
-        setData(formattedData);
-      } catch (error) {
-        console.error("Error fetching rooms:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-=======
     useEffect(() => {
       const fetchData = async () => {
       try {
@@ -122,7 +86,6 @@ function Search() {
       }, []);
 
   // /rooms의 모든 방 정보 가져오기
->>>>>>> 9ac89590aea5ec5198d1b48f5edcd80f2c507275
   const getRooms = async () => {
     try {
       const roomsData = await apis({
@@ -135,38 +98,6 @@ function Search() {
       return [];
     }
   };
-<<<<<<< HEAD
-
-  const searchList = async () => {
-    try {
-      const res = await apis({
-        url: "/reservations",
-        method: "GET",
-      });
-
-      console.log("API 응답:", res);
-      console.log("옵션:", options);
-
-      const filtered = res.filter((item) => {
-        const reservationDateTime = dayjs(`${item.reservationDate} ${item.startTime}`, "YYYY-MM-DD HH:mm");
-
-        const isFacilityMatched = item.roomId.facilityId.facilityName === options.building;
-        const isCapacityMatched = parseInt(item.roomId.roomCapacity) >= parseInt(options.person);
-        const isDateMatched = item.reservationDate === options.date;
-        const isTimeMatched = reservationDateTime.isAfter(dayjs(`${options.date} ${options.time}`, "YYYY-MM-DD HH:mm"));
-
-        return isFacilityMatched && isCapacityMatched && isDateMatched && isTimeMatched;
-      });
-
-      console.log("필터링된 데이터:", filtered);
-
-      setData(filtered);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-=======
   
  // facilityName과 building 값의 매핑
 const buildingMap = {
@@ -229,7 +160,6 @@ const searchList = async (selectedOptions) => {
 
 
   
->>>>>>> 9ac89590aea5ec5198d1b48f5edcd80f2c507275
   useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -333,28 +263,6 @@ const searchList = async (selectedOptions) => {
     <div className='pt-40 px-20'>
       <div className='flex flex-col w-full p-10 shadow rounded-md justify-around items-center mb-20'>
         <div className='flex w-full justify-around items-center'>
-<<<<<<< HEAD
-          <div className='flex flex-col relative justify-center items-center'>
-            <p className='font-semibold'>시설명</p>
-            <div className='border border-gray-300 py-2 px-5 rounded'>
-              <select name={"building"} value={options.building} onChange={onChangeOptions}>
-                {BUILDINGS.map((building) => (
-                  <option value={building.value}>{building.title}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className='flex flex-col relative justify-center items-center'>
-            <p className='font-semibold'>예상인원</p>
-            <div className='border border-gray-300 py-2 px-5 rounded'>
-              <select name='person' value={options.person} onChange={onChangeOptions}>
-                {PERSON.map((person) => (
-                  <option value={person}>{person}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-=======
         <div className='flex flex-col relative justify-center items-center'>
   <label htmlFor="building" className='font-semibold'>시설명</label>
   <div className='border border-gray-300 py-2 px-5 rounded'>
@@ -377,7 +285,6 @@ const searchList = async (selectedOptions) => {
   </div>
 </div>
 
->>>>>>> 9ac89590aea5ec5198d1b48f5edcd80f2c507275
           <div className='flex flex-col relative justify-center items-center'>
             <p className='font-semibold'>예약일</p>
             <input
@@ -395,16 +302,10 @@ const searchList = async (selectedOptions) => {
             </div>
           </div>
         </div>
-<<<<<<< HEAD
-        <button className='bg-primary rounded px-5 py-2.5 text-white font-semibold mt-10' onClick={searchList}>
-          검색
-        </button>
-=======
         <button className='bg-primary rounded px-5 py-2.5 text-white font-semibold mt-10' onClick={() => searchList(options)}>
           검색
         </button>
 
->>>>>>> 9ac89590aea5ec5198d1b48f5edcd80f2c507275
       </div>
 
       <div className='mt-8 flow-root'>
@@ -427,12 +328,6 @@ const searchList = async (selectedOptions) => {
                     수용인원
                   </th>
                   <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
-<<<<<<< HEAD
-                    예약일
-                  </th>
-                  <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
-=======
->>>>>>> 9ac89590aea5ec5198d1b48f5edcd80f2c507275
                     이용시간
                   </th>
                   <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
@@ -458,19 +353,8 @@ const searchList = async (selectedOptions) => {
                       {item?.roomName}
                     </td>
                     <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
-<<<<<<< HEAD
-                      {/* Room Capacity 표시 */}
                       {item?.roomCapacity}
                     </td>
-                    {
-                      <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
-                        {item?.reservationDate}
-                      </td>
-                    }{" "}
-=======
-                      {item?.roomCapacity}
-                    </td>
->>>>>>> 9ac89590aea5ec5198d1b48f5edcd80f2c507275
                     <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{`${item?.startTime} ~ ${item?.endTime}`}</td>
                     <td className={`whitespace-nowrap px-3 py-4 text-sm font-bold ${COLORS[item?.reservationStatus]}`}>
                       {STATUS[item?.reservationStatus]}
